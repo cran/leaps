@@ -1,11 +1,10 @@
 # 
-# R code for subset selection using
+# R code for model selection using
 # Alan Miller's FORTRAN routines
 #
 .First.lib <- function(lib, pkg) {
           library.dynam("leaps", pkg, lib)
         }
-
 
 leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,force.out=NULL,intercept=TRUE,nvmax=8,nbest=1,warn.dep=T){
   make.names<-function(np){
@@ -45,15 +44,15 @@ leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,force.out=NULL,inter
   vorder<-1:np
   il<-nvmax*(nvmax+1)/2
   nrbar<-np*(np-1)/2
-  qrleaps<-.Fortran("makeqr",np=as.integer(np),nn=as.integer(nn),wt=wt,tx=t(xx),y=y,d=numeric(np), rbar=numeric(nrbar),thetab=numeric(np),sserr=numeric(1),ier=as.integer(0))
+  qrleaps<-.Fortran("makeqr",np=as.integer(np),nn=as.integer(nn),wt=wt,tx=t(xx),y=y,d=numeric(np), rbar=numeric(nrbar),thetab=numeric(np),sserr=numeric(1),ier=as.integer(0), PACKAGE="leaps",DUP=FALSE)
   if (qrleaps$ier!=0) warning(paste("MAKEQR returned error code",qrleaps$ier))
   qrleaps$tx<-NULL
   qrleaps$wt<-NULL
-  tolset<-.Fortran("tolset",as.integer(np),as.integer(nrbar),qrleaps$d,qrleaps$rbar,tol=numeric(np),numeric(np),ier=as.integer(0))
+  tolset<-.Fortran("tolset",as.integer(np),as.integer(nrbar),qrleaps$d,qrleaps$rbar,tol=numeric(np),numeric(np),ier=as.integer(0), PACKAGE="leaps")
   if (tolset$ier!=0) warning(paste("TOLSET returned error code",tolset$ier))
-  ss<-.Fortran("ss",as.integer(np),qrleaps$d,qrleaps$thetab,qrleaps$sserr,rss=numeric(np),ier=as.integer(0))
+  ss<-.Fortran("ssleaps",as.integer(np),qrleaps$d,qrleaps$thetab,qrleaps$sserr,rss=numeric(np),ier=as.integer(0), PACKAGE="leaps")
   if (ss$ier!=0) warning(paste("SS returned error code",ss$ier))
- sing<-.Fortran("sing",np=as.integer(qrleaps$np),nrbar=as.integer(nrbar),d=qrleaps$d,rbar=qrleaps$rbar,thetab=qrleaps$thetab,sserr=qrleaps$sserr,tol=tolset$tol,lindep=logical(qrleaps$np),work=numeric(qrleaps$np),ier=as.integer(0))
+ sing<-.Fortran("sing",np=as.integer(qrleaps$np),nrbar=as.integer(nrbar),d=qrleaps$d,rbar=qrleaps$rbar,thetab=qrleaps$thetab,sserr=qrleaps$sserr,tol=tolset$tol,lindep=logical(qrleaps$np),work=numeric(qrleaps$np),ier=as.integer(0), PACKAGE="leaps")
    if (sing$ier>0) warning(paste("SING returned error code",sing$ier))
  sing$work<-NULL
   if(any(sing$lindep)) {
@@ -78,13 +77,13 @@ leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,force.out=NULL,inter
     }
   }
   if (any(sing$lindep)){
-	ss<-.Fortran("ss",as.integer(np),sing$d,sing$thetab,sing$sserr,rss=numeric(np),ier=as.integer(0))
+	ss<-.Fortran("ssleaps",as.integer(np),sing$d,sing$thetab,sing$sserr,rss=numeric(np),ier=as.integer(0))
   	if (ss$ier!=0) warning(paste("SS returned error code",ss$ier))
   }
   initr<-.Fortran("initr",as.integer(np),as.integer(nvmax),as.integer(nbest),
 bound=numeric(np),ress=numeric(nbest*nvmax),as.integer(nvmax),
 lopt=integer(nbest*il),as.integer(il),vorder=as.integer(vorder),ss$rss,
-ier=as.integer(0))
+ier=as.integer(0), PACKAGE="leaps")
   if (initr$ier!=0) warning(paste("INITR returned error code",initr$ier))
   nullrss<-if (intercept) ss$rss[1] else sum(y^2)	
  rval<-c(sing,list(nn=qrleaps$nn,rss=ss$rss,bound=initr$bound,
@@ -92,14 +91,14 @@ ress=matrix(initr$ress,ncol=nbest),lopt=matrix(initr$lopt,ncol=nbest),
 nvmax=nvmax,nbest=nbest,nrbar=nrbar,il=il,ir=nvmax,vorder=initr$vorder,
 first=first,last=last,xnames=colnames(xx),force.in=(index==-1),
 force.out=(index==1),intercept=intercept,nullrss=nullrss))
- class(rval)<-"subsets"
+ class(rval)<-"regsubsets"
  invisible(rval)
 }
 
 
 leaps.exhaustive<-function(leaps.obj,really.big=FALSE){
-  if (!inherits(leaps.obj,"subsets")){
-    stop("Not a subsets object -- must run leaps.setup")
+  if (!inherits(leaps.obj,"regsubsets")){
+    stop("Not a regsubsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
   if (!really.big & (leaps.obj$np>50 || leaps.obj$nbest>40)) {
@@ -129,7 +128,7 @@ leaps.exhaustive<-function(leaps.obj,really.big=FALSE){
 	dimwk=as.integer(dimwk),
 	iwk=integer(dimiwk),
 	dimiwk=as.integer(dimiwk),
-	ier=as.integer(0))
+	ier=as.integer(0), PACKAGE="leaps")
   rval$dimwk<-rval$dimiwk<-rval$iwk<-rval$wk<-NULL
   rval$xnames<-leaps.obj$xnames
   rval$method<-c("exhaustive",leaps.obj$method)
@@ -141,19 +140,19 @@ leaps.exhaustive<-function(leaps.obj,really.big=FALSE){
   rval$reorder<-leaps.obj$reorder
   rval$nullrss<-leaps.obj$nullrss
   rval$nn<-leaps.obj$nn
-  class(rval)<-"subsets"
+  class(rval)<-"regsubsets"
   if(rval$ier!=0) warning(paste("XHAUST returned error code",rval$ier))
   rval
 }
 
 
 leaps.backward<-function(leaps.obj){
-  if (!inherits(leaps.obj,"subsets")){
-    stop("Not a subsets object -- must run leaps.setup")
+  if (!inherits(leaps.obj,"regsubsets")){
+    stop("Not a regsubsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
   dimwk<-2*leaps.obj$last
-  rval<-.Fortran("bakwrd",np=as.integer(leaps.obj$np),nrbar=as.integer(leaps.obj$nrbar),d=leaps.obj$d,rbar=leaps.obj$rbar,thetab=leaps.obj$thetab,first=as.integer(leaps.obj$first),last=as.integer(leaps.obj$last),vorder=as.integer(leaps.obj$vorder),tol=leaps.obj$tol,rss=leaps.obj$rss,bound=leaps.obj$bound,nvmax=as.integer(leaps.obj$nvmax),ress=leaps.obj$ress,ir=as.integer(leaps.obj$ir),nbest=as.integer(leaps.obj$nbest),lopt=matrix(as.integer(leaps.obj$lopt),ncol=nbest),il=as.integer(leaps.obj$il),wk=numeric(dimwk),dimwk=as.integer(dimwk),ier=as.integer(0))
+  rval<-.Fortran("bakwrd",np=as.integer(leaps.obj$np),nrbar=as.integer(leaps.obj$nrbar),d=leaps.obj$d,rbar=leaps.obj$rbar,thetab=leaps.obj$thetab,first=as.integer(leaps.obj$first),last=as.integer(leaps.obj$last),vorder=as.integer(leaps.obj$vorder),tol=leaps.obj$tol,rss=leaps.obj$rss,bound=leaps.obj$bound,nvmax=as.integer(leaps.obj$nvmax),ress=leaps.obj$ress,ir=as.integer(leaps.obj$ir),nbest=as.integer(leaps.obj$nbest),lopt=matrix(as.integer(leaps.obj$lopt),ncol=nbest),il=as.integer(leaps.obj$il),wk=numeric(dimwk),dimwk=as.integer(dimwk),ier=as.integer(0), PACKAGE="leaps")
   rval$dimwk<-rval$wk<-NULL
   rval$xnames<-leaps.obj$xnames
   rval$method<-c("backward",leaps.obj$method)
@@ -165,19 +164,19 @@ leaps.backward<-function(leaps.obj){
   rval$reorder<-leaps.obj$reorder
   rval$nullrss<-leaps.obj$nullrss
   rval$nn<-leaps.obj$nn
-  class(rval)<-"subsets"
+  class(rval)<-"regsubsets"
   if(rval$ier!=0) warning(paste("BAKWRD returned error code",rval$ier))
   rval
 }
 
 
 leaps.forward<-function(leaps.obj){
-  if (!inherits(leaps.obj,"subsets")){
-    stop("Not a subsets object -- must run leaps.setup")
+  if (!inherits(leaps.obj,"regsubsets")){
+    stop("Not a regsubsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
   dimwk<-3*leaps.obj$last
-  rval<-.Fortran("forwrd",np=as.integer(leaps.obj$np),nrbar=as.integer(leaps.obj$nrbar),d=leaps.obj$d,rbar=leaps.obj$rbar,thetab=leaps.obj$thetab,first=as.integer(leaps.obj$first),last=as.integer(leaps.obj$last),vorder=as.integer(leaps.obj$vorder),tol=leaps.obj$tol,rss=leaps.obj$rss,bound=leaps.obj$bound,nvmax=as.integer(leaps.obj$nvmax),ress=leaps.obj$ress,ir=as.integer(leaps.obj$ir),nbest=as.integer(leaps.obj$nbest),lopt=matrix(as.integer(leaps.obj$lopt),ncol=nbest),il=as.integer(leaps.obj$il),wk=numeric(dimwk),dimwk=as.integer(dimwk),ier=as.integer(0))
+  rval<-.Fortran("forwrd",np=as.integer(leaps.obj$np),nrbar=as.integer(leaps.obj$nrbar),d=leaps.obj$d,rbar=leaps.obj$rbar,thetab=leaps.obj$thetab,first=as.integer(leaps.obj$first),last=as.integer(leaps.obj$last),vorder=as.integer(leaps.obj$vorder),tol=leaps.obj$tol,rss=leaps.obj$rss,bound=leaps.obj$bound,nvmax=as.integer(leaps.obj$nvmax),ress=leaps.obj$ress,ir=as.integer(leaps.obj$ir),nbest=as.integer(leaps.obj$nbest),lopt=matrix(as.integer(leaps.obj$lopt),ncol=nbest),il=as.integer(leaps.obj$il),wk=numeric(dimwk),dimwk=as.integer(dimwk),ier=as.integer(0), PACKAGE="leaps")
   rval$dimwk<-rval$wk<-NULL
   rval$xnames<-leaps.obj$xnames
   rval$method<-c("forward",leaps.obj$method)
@@ -196,12 +195,12 @@ leaps.forward<-function(leaps.obj){
 
 
 leaps.seqrep<-function(leaps.obj){
-  if (!inherits(leaps.obj,"subsets")){
-    stop("Not a subsets object -- must run leaps.setup")
+  if (!inherits(leaps.obj,"regsubsets")){
+    stop("Not a regsubsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
   dimwk<-3*leaps.obj$last
-  rval<-.Fortran("seqrep",np=as.integer(leaps.obj$np),nrbar=as.integer(leaps.obj$nrbar),d=leaps.obj$d,rbar=leaps.obj$rbar,thetab=leaps.obj$thetab,first=as.integer(leaps.obj$first),last=as.integer(leaps.obj$last),vorder=as.integer(leaps.obj$vorder),tol=leaps.obj$tol,rss=leaps.obj$rss,bound=leaps.obj$bound,nvmax=as.integer(leaps.obj$nvmax),ress=leaps.obj$ress,ir=as.integer(leaps.obj$ir),nbest=as.integer(leaps.obj$nbest),lopt=matrix(as.integer(leaps.obj$lopt),ncol=nbest),il=as.integer(leaps.obj$il),wk=numeric(dimwk),dimwk=as.integer(dimwk),ier=as.integer(0))
+  rval<-.Fortran("seqrep",np=as.integer(leaps.obj$np),nrbar=as.integer(leaps.obj$nrbar),d=leaps.obj$d,rbar=leaps.obj$rbar,thetab=leaps.obj$thetab,first=as.integer(leaps.obj$first),last=as.integer(leaps.obj$last),vorder=as.integer(leaps.obj$vorder),tol=leaps.obj$tol,rss=leaps.obj$rss,bound=leaps.obj$bound,nvmax=as.integer(leaps.obj$nvmax),ress=leaps.obj$ress,ir=as.integer(leaps.obj$ir),nbest=as.integer(leaps.obj$nbest),lopt=matrix(as.integer(leaps.obj$lopt),ncol=nbest),il=as.integer(leaps.obj$il),wk=numeric(dimwk),dimwk=as.integer(dimwk),ier=as.integer(0), PACKAGE="leaps")
   rval$dimwk<-rval$wk<-NULL
   rval$xnames<-leaps.obj$xnames
   rval$method<-c("'sequential replacement'",leaps.obj$method)
@@ -213,14 +212,14 @@ leaps.seqrep<-function(leaps.obj){
   rval$reorder<-leaps.obj$reorder
   rval$nullrss<-leaps.obj$nullrss
   rval$nn<-leaps.obj$nn
-  class(rval)<-"subsets"
+  class(rval)<-"regsubsets"
   if(rval$ier!=0) warning(paste("SEQREP returned error code",rval$ier))
   rval
 }
 
 
 
-print.subsets<-function(ll){
+print.regsubsets<-function(ll){
   cat("Subset selection object\n")
   if (!is.null(ll$call)) {
     cat("Call: ")
@@ -244,12 +243,12 @@ print.subsets<-function(ll){
   invisible(NULL)
 }
 
-print.summary.subsets<-function(obj){
+print.summary.regsubsets<-function(obj){
 	print(obj$obj)
 	print(obj$outmat)
 }
 
-summary.subsets<-function(ll,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL){
+summary.regsubsets<-function(ll,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL){
  triangle<-function(k) {j<-k-1;1+j*(j+1)/2}
  nmodl<-ll$nbest*ll$nvmax
  if(all.best) nshow<-ll$nbest else nshow<-1
@@ -293,22 +292,22 @@ summary.subsets<-function(ll,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=N
    if (ll$intercept) outmat<-outmat[,-1,drop=F]
  }
  rval<-list(which=rmat,rsq=rsqvec,rss=rssvec,adjr2=adjr2vec,cp=cpvec,bic=bicvec,outmat=outmat,obj=ll)
- class(rval)<-"summary.subsets"
+ class(rval)<-"summary.regsubsets"
  rval
 }
   
 
-subsets<-function(x,...){
-  UseMethod("subsets",x)
+regsubsets<-function(x,...){
+  UseMethod("regsubsets",x)
 }
 
-subsets.default<-function(x,y,weights=rep(1,length(y)),nbest=1,nvmax=8,force.in=NULL,force.out=NULL,intercept=T,method=c("exhaustive","backward","forward","seqrep"),really.big=F){
+regsubsets.default<-function(x,y,weights=rep(1,length(y)),nbest=1,nvmax=8,force.in=NULL,force.out=NULL,intercept=T,method=c("exhaustive","backward","forward","seqrep"),really.big=F){
 a<-leaps.setup(x,y,wt=weights,nbest=nbest,nvmax=nvmax,force.in=force.in,force.out=force.out,intercept=intercept)
 switch(1+pmatch(method[1],c("exhaustive","backward","forward","seqrep"),nomatch=0),stop(paste("Ambiguous or unrecognised method name :",method)), leaps.exhaustive(a,really.big=really.big),leaps.backward(a),leaps.forward(a),leaps.seqrep(a))
 }
 
 
-subsets.formula<-function(formula,data,weights=rep(1,length(y)),nbest=1,nvmax=8,force.in=NULL,force.out=NULL,intercept=T,method=c("exhaustive","backward","forward","seqrep"),really.big=F){
+regsubsets.formula<-function(formula,data,weights=rep(1,length(y)),nbest=1,nvmax=8,force.in=NULL,force.out=NULL,intercept=T,method=c("exhaustive","backward","forward","seqrep"),really.big=F){
   mm<-match.call()
   mm$nbest<-mm$nvmax<-mm$force.in<-mm$force.out<-mm$intercept<-mm$method<-mm$really.big<-NULL
   mm[[1]]<-as.name("model.frame")
@@ -329,11 +328,11 @@ leaps<-function(x,y,wt=rep(1,NROW(x)),int=TRUE,method=c("Cp","adjr2","r2"),nbest
 	method<-method[1]
 	if (pmatch(method,c("Cp","adjr2","r2"),nomatch=0)==0) stop("Ambiguous or unrecognised method name")
 	if (strictly.compatible){
-	  if (NCOL(x)>31) stop("leaps does not allow more than 31 variables; use subsets()")
+	  if (NCOL(x)>31) stop("leaps does not allow more than 31 variables; use regsubsets()")
 	  if (is.null(names)) colnames(x)<-c(as.character(1:9),LETTERS)[1:NCOL(x)]
 	}
 	a<-leaps.setup(x,y,wt=wt,nbest=nbest,nvmax=NCOL(x)+int,intercept=int,warn.dep=FALSE)
-	if (strictly.compatible & any(a$lindep)) stop("leaps requires full-rank design matrix; use subsets()")
+	if (strictly.compatible & any(a$lindep)) stop("leaps requires full-rank design matrix; use regsubsets()")
 	b<-leaps.exhaustive(a)
 	d<-summary(b)
 	rval<-list(which=d$which)

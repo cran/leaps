@@ -1165,7 +1165,7 @@ C
       RETURN
       END
 C
-      SUBROUTINE SS(NP, D, THETAB, SSERR, RSS, IER)
+      SUBROUTINE SSLEAPS(NP, D, THETAB, SSERR, RSS, IER)
 C
 C     ALGORITHM AS274  APPL. STATIST. (1992) VOL. 41, NO. 2
 C
@@ -1214,7 +1214,8 @@ C     EPS is a machine-dependent constant.   For compilers which use
 C     the IEEE format for floating-point numbers, recommended values
 C     are 1.E-06 for single precision and 1.D-12 for double precision.
 C
-      DATA EPS/1.D-12/, ZERO/0.D0/
+c     changed EPS from 10^-12 to 5x10^-10 to try to fix a bug
+      DATA EPS/5.D-10/, ZERO/0.D0/
 C
 C     Some checks.
 C

@@ -16,7 +16,7 @@ leaps(x=, y=, wt=rep(1, NROW(x)), int=TRUE, method=c("Cp", "adjr2", "r2"), nbest
 \item{strictly.compatible}{Implement misfeatures of leaps() in S}
 }
 \description{
-leaps() performs an exhaustive search for the best subsets of the variables in x for predicting y in linear regression, using an efficient branch-and-bound algorithm.  It is a compatibility wrapper for \code{\link{subsets}} does the same thing better.
+leaps() performs an exhaustive search for the best subsets of the variables in x for predicting y in linear regression, using an efficient branch-and-bound algorithm.  It is a compatibility wrapper for \code{\link{regsubsets}} does the same thing better.
 }
 \value{
 A list with components
@@ -33,7 +33,7 @@ With \code{strictly.compatible=T} the function will stop with an error if \code{
 }
 
 \seealso{
-\code{\link{subsets}}, \code{\link{subsets.formula}}, \code{\link{subsets.default}}}
+\code{\link{regsubsets}}, \code{\link{regsubsets.formula}}, \code{\link{regsubsets.default}}}
 }
 \examples{
 x<-matrix(rnorm(100),ncol=4)

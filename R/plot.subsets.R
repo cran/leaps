@@ -1,4 +1,4 @@
-plot.subsets<-function(obj,labels=obj$xnames,main=NULL,scale=c("bic","Cp","adjr2","r2"),col=gray(seq(0,0.9,length=10))){
+plot.regsubsets<-function(obj,labels=obj$xnames,main=NULL,scale=c("bic","Cp","adjr2","r2"),col=gray(seq(0,0.9,length=10))){
 	lsum<-summary(obj)
 	par(mar=c(7,5,6,3)+0.1)
         nmodels<-length(lsum$rsq)

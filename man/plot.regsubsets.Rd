@@ -1,13 +1,13 @@
-\name{plot.subsets}
-\alias{plot.subsets}
+\name{plot.regsubsets}
+\alias{plot.regsubsets}
 %- Also NEED an `\alias' for EACH other topic documented here.
 \title{Graphical table of best subsets}
 \usage{
-plot.subsets(obj, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r2"), col=gray(seq(0, 0.9, length = 10)))
+plot.regsubsets(obj, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r2"), col=gray(seq(0, 0.9, length = 10)))
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
- \item{obj}{subsets object }
+ \item{obj}{\code{regsubsets} object }
  \item{labels}{variable names}
  \item{main}{title for plot }
  \item{scale}{which summary statistic to use for ordering plots}
@@ -16,18 +16,18 @@ plot.subsets(obj, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r
 \description{
 Plots a table of models showing which variables are in each model. The
 models are ordered by the specified model selection statistic. This plot 
-is useful when there are more than ten or so models and the simple table 
-produced by \code{\link{summary.subsets}} is too big to read.
+is particularly useful when there are more than ten or so models and the simple table 
+produced by \code{\link{summary.regsubsets}} is too big to read.
 }
 \value{
 None
 }
-
-\seealso{\code{\link{subsets}},\code{\link{summary.subsets}} }
+\author{Thomas Lumley, based on a concept by Merlise Clyde}
+\seealso{\code{\link{regsubsets}},\code{\link{summary.regsubsets}} }
 
 \examples{
 data(swiss)
-a<-subsets(Fertility~.,nbest=3,data=swiss)
+a<-regsubsets(Fertility~.,nbest=3,data=swiss)
 par(mfrow=c(1,2))
 plot(a)
 plot(a,scale="r2")

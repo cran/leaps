@@ -1,21 +1,21 @@
-\name{subsets}
-\title{functions for subset selection}
+\name{regsubsets}
+\title{functions for model selection}
 \usage{
-subsets(x=, ...)
+regsubsets(x=, ...)
 
-subsets.formula(formula=, data=, weights=rep(1, length(y)), nbest=1, nvmax=8, force.in=NULL, force.out=NULL, intercept=T, method=c("exhaustive", "backward", "forward", "seqrep"), really.big=F)
+regsubsets.formula(formula=, data=, weights=rep(1, length(y)), nbest=1, nvmax=8, force.in=NULL, force.out=NULL, intercept=T, method=c("exhaustive", "backward", "forward", "seqrep"), really.big=F)
 
-subsets.default(x=, y=, weights=rep(1, length(y)), nbest=1, nvmax=8,
+regsubsets.default(x=, y=, weights=rep(1, length(y)), nbest=1, nvmax=8,
 force.in=NULL, force.out=NULL, intercept=T, method=c("exhaustive",
 "backward", "forward", "seqrep"), really.big=F)
 
-summary.subsets(ll,all.best=TRUE,matrix=T,matrix.logical=F,df=NULL)
+summary.regsubsets(ll,all.best=TRUE,matrix=T,matrix.logical=F,df=NULL)
 
 }
-\alias{subsets}
-\alias{subsets.default}
-\alias{subsets.formula}
-\alias{summary.subsets}
+\alias{regsubsets}
+\alias{regsubsets.default}
+\alias{regsubsets.formula}
+\alias{summary.regsubsets}
 \arguments{
 \item{formula}{model formula for full model}
 \item{data}{Optional data frame}
@@ -30,7 +30,7 @@ summary.subsets(ll,all.best=TRUE,matrix=T,matrix.logical=F,df=NULL)
 \item{method}{Use exhaustive search, forward selection, backward selection or sequential replacement to search.}
 \item{really.big}{Must be T to perform exhaustive search on more than 50 variables.}
 
-\item{ll}{subsets object}
+\item{ll}{regsubsets object}
 \item{all.best}{Show all the best subsets or just one of each size}
 \item{matrix}{Show a matrix of the variables in each model or just summary
     statistics}
@@ -43,7 +43,7 @@ summary.subsets(ll,all.best=TRUE,matrix=T,matrix.logical=F,df=NULL)
 Generic function for regression subset selection with methods for formula and matrix arguments. 
 }
 \value{
-An object of class "subsets" containing no user-serviceable parts. It is designed to be processed by \code{\link{summary.subsets}}. 
+An object of class "regsubsets" containing no user-serviceable parts. It is designed to be processed by \code{\link{summary.regsubsets}}. 
 }
 \note{
 This function improves on \code{\link{leaps}} in several ways.  The design matrix need not be of full rank. The ability to restrict \code{nvmax} speeds up exhaustive searches considerably. There is no hard-coded limit to the number of variables.
@@ -53,8 +53,9 @@ This function improves on \code{\link{leaps}} in several ways.  The design matri
 }
 \examples{
 data(swiss)
-a<-subsets(as.matrix(swiss[,-1]),swiss[,1])
+a<-regsubsets(as.matrix(swiss[,-1]),swiss[,1])
 summary(a)
-b<-subsets(Fertility~.,data=swiss)
+b<-regsubsets(Fertility~.,data=swiss)
 summary(a)
 }
+\keyword{regression}

@@ -26,9 +26,9 @@ leaps.forward(leaps.obj)
 \item{really.big}{required before R gets sent off on a long uninterruptible computation}
 }
 \description{
-These functions are used internally by \code{subsets} and \code{leaps}. They are wrappers for Fortran routines that construct and manipulate a QR decomposition.}
+These functions are used internally by \code{regsubsets} and \code{leaps}. They are wrappers for Fortran routines that construct and manipulate a QR decomposition.}
 
 \seealso{
-\code{\link{subsets}}, \code{\link{leaps}}
+\code{\link{regsubsets}}, \code{\link{leaps}}
 }
 \keyword{regression}
