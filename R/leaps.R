@@ -46,9 +46,10 @@ leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,
   il<-nvmax*(nvmax+1)/2
   nrbar<-np*(np-1)/2
   qrleaps<-.Fortran("makeqr",np=as.integer(np),nn=as.integer(nn),
-                    wt=wt,tx=t(xx),y=y,d=numeric(np), rbar=numeric(nrbar),
-                    thetab=numeric(np),sserr=numeric(1),ier=as.integer(0),
-                    PACKAGE="leaps",DUP=FALSE)
+	wt=as.double(wt),tx=t(xx),y=as.double(y),d=numeric(np),
+	rbar=numeric(nrbar),
+        thetab=numeric(np),sserr=numeric(1),ier=as.integer(0),
+        PACKAGE="leaps",DUP=FALSE)
   if (qrleaps$ier!=0)
       warning(paste("MAKEQR returned error code",qrleaps$ier))
   qrleaps$tx<-NULL
