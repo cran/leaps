@@ -1,55 +1,69 @@
 \name{regsubsets}
 \title{functions for model selection}
-\usage{
-regsubsets(x=, ...)
-
-regsubsets.formula(formula=, data=, weights=rep(1, length(y)), nbest=1, nvmax=8, force.in=NULL, force.out=NULL, intercept=T, method=c("exhaustive", "backward", "forward", "seqrep"), really.big=F)
-
-regsubsets.default(x=, y=, weights=rep(1, length(y)), nbest=1, nvmax=8,
-force.in=NULL, force.out=NULL, intercept=T, method=c("exhaustive",
-"backward", "forward", "seqrep"), really.big=F)
-
-summary.regsubsets(ll,all.best=TRUE,matrix=T,matrix.logical=F,df=NULL)
-
-}
 \alias{regsubsets}
 \alias{regsubsets.default}
 \alias{regsubsets.formula}
 \alias{summary.regsubsets}
-\arguments{
-\item{formula}{model formula for full model}
-\item{data}{Optional data frame}
-\item{x}{design matrix with all predictors}
-\item{y}{response vector}
-\item{weights}{weight vector}
-\item{nbest}{number of subsets of each size to record}
-\item{nvmax}{maximum size of subsets to examine}
-\item{force.in}{index to columns of design matrix that should be in all models}
-\item{force.out}{index to columns of design matrix that should be in no models}
-\item{intercept}{Add an intercept?}
-\item{method}{Use exhaustive search, forward selection, backward selection or sequential replacement to search.}
-\item{really.big}{Must be T to perform exhaustive search on more than 50 variables.}
-
-\item{ll}{regsubsets object}
-\item{all.best}{Show all the best subsets or just one of each size}
-\item{matrix}{Show a matrix of the variables in each model or just summary
-    statistics}
-\item{matrix.logical}{With \code{matrix=TRUE}, the matrix is logical
-    \code{TRUE}/\code{FALSE} or string \code{"*"}/code{" "}}
-\item{df}{Specify a number of degrees of freedom for the summary
-    statistics. The default is \code{n-1}}
-}
+\alias{print.regsubsets}
+\alias{print.summary.regsubsets}
 \description{
-Generic function for regression subset selection with methods for formula and matrix arguments. 
+  Generic function for regression subset selection with methods for
+  formula and matrix arguments.
+}
+\usage{
+regsubsets(x=, ...)
+
+regsubsets.formula(formula=, data=, weights=rep(1, length(y)), nbest=1,
+                   nvmax=8, force.in=NULL, force.out=NULL, intercept=T,
+                   method=c("exhaustive","backward","forward","seqrep"),
+                   really.big=F)
+regsubsets.default(x=, y=, weights=rep(1, length(y)), nbest=1, nvmax=8,
+                   force.in=NULL, force.out=NULL, intercept=T,
+                   method=c("exhaustive","backward","forward","seqrep"),
+                   really.big=F)
+
+\method{summary}{regsubsets}(ll,all.best=TRUE,matrix=T,matrix.logical=F,df=NULL)
+
+}
+\arguments{
+  \item{formula}{model formula for full model}
+  \item{data}{Optional data frame}
+  \item{x}{design matrix with all predictors}
+  \item{y}{response vector}
+  \item{weights}{weight vector}
+  \item{nbest}{number of subsets of each size to record}
+  \item{nvmax}{maximum size of subsets to examine}
+  \item{force.in}{index to columns of design matrix that should be in
+    all models}
+  \item{force.out}{index to columns of design matrix that should be in
+    no models}
+  \item{intercept}{Add an intercept?}
+  \item{method}{Use exhaustive search, forward selection, backward
+    selection or sequential replacement to search.}
+  \item{really.big}{Must be T to perform exhaustive search on more than
+    50 variables.}
+  \item{ll}{regsubsets object}
+  \item{all.best}{Show all the best subsets or just one of each size}
+  \item{matrix}{Show a matrix of the variables in each model or just
+    summary statistics}
+  \item{matrix.logical}{With \code{matrix=TRUE}, the matrix is logical
+    \code{TRUE}/\code{FALSE} or string \code{"*"}/code{" "}}
+  \item{df}{Specify a number of degrees of freedom for the summary
+    statistics. The default is \code{n-1}.}
 }
 \value{
-An object of class "regsubsets" containing no user-serviceable parts. It is designed to be processed by \code{\link{summary.regsubsets}}. 
+  An object of class \code{"regsubsets"} containing no user-serviceable
+  parts.  It is designed to be processed by
+  \code{\link{summary.regsubsets}}.  
 }
 \note{
-This function improves on \code{\link{leaps}} in several ways.  The design matrix need not be of full rank. The ability to restrict \code{nvmax} speeds up exhaustive searches considerably. There is no hard-coded limit to the number of variables.
+  This function improves on \code{\link{leaps}} in several ways.  The
+  design matrix need not be of full rank. The ability to restrict
+  \code{nvmax} speeds up exhaustive searches considerably. There is no
+  hard-coded limit to the number of variables.
 }
 \seealso{
-\code{\link{leaps}}
+  \code{\link{leaps}}
 }
 \examples{
 data(swiss)
