@@ -1,0 +1,43 @@
+\name{leaps}
+\title{all-subsets regressiom}
+\usage{
+leaps(x=, y=, wt=rep(1, NROW(x)), int=TRUE, method=c("Cp", "adjr2", "r2"), nbest=10, names=NULL, df=NROW(x), strictly.compatible=T)
+}
+\alias{leaps}
+\arguments{
+\item{x}{A matrix of predictors}
+\item{y}{A response vector}
+\item{wt}{Optional weight vector}
+\item{int}{Add an intercept to the model}
+\item{method}{Calculate Cp, adjusted R-squared or R-squared}
+\item{nbest}{Number of subsets of each size to report}
+\item{names}{vector of names for columns of \code{x}}
+\item{df}{Total degrees of freedom to use instead of \code{nrow(x)} in calculating Cp and adjusted R-squared}
+\item{strictly.compatible}{Implement misfeatures of leaps() in S}
+}
+\description{
+leaps() performs an exhaustive search for the best subsets of the variables in x for predicting y in linear regression, using an efficient branch-and-bound algorithm.  \code{\link{subsets}} does the same thing better.
+}
+\value{
+A list with components
+\item{which}{logical matrix. Each row can be used to select the columns of \code{x} in the respective model}
+\item{size}{Number of variables, including intercept if any, in the model}
+\item{cp}{or \code{adjr2} or \code{r2} is the value of the chosen model selectionstatistic for each model}
+\item{label}{vector of names for the columns of x}
+}
+\references{
+Alan Miller "Subset Selection in Regression" Chapman \& Hall
+S documentation for \code{leaps()}
+}
+\note{
+With \code{strictly.compatible=T} the function will stop with an error if \code{x} is not of full rank or if it has more than 31 columns. It will ignore the column names of \code{x} even if \code{names==NULL} and will replace them with "0" to "9", "A" to "Z".
+}
+
+\seealso{
+\code{\link{subsets}}, \code{\link{subsets.formula}}, \code{\link{subsets.default}}, \code{\link{summary.leaps}}
+}
+\examples{
+x<-matrix(rnorm(100),ncol=4)
+y<-rnorm(25)
+leaps(x,y)
+}

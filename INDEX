@@ -1,0 +1,8 @@
+leaps.setup	  Setup for subset selection
+leaps.exhaustive  Branch and bound exhaustive search
+leaps.backward	  Backward Elimination
+leaps.forward	  Forward Selection
+leaps.seqrep	  Sequential replacement
+subsets		  Generic wrapper with methods for formula and matrix data
+print.leaps	  print method
+summary.leaps	  summary method
