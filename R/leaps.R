@@ -400,12 +400,16 @@ regsubsets.formula<-function(x,data,weights=NULL,nbest=1,nvmax=8,force.in=NULL,
                              force.out=NULL,intercept=TRUE,
                              method=c("exhaustive","backward","forward","seqrep"),
                              really.big=FALSE,...){
+  formula<-x
+  rm(x)
   mm<-match.call()
+  mm$formula<-formula
+  mm$x<-NULL
   mm$nbest<-mm$nvmax<-mm$force.in<-mm$force.out<-NULL
   mm$intercept<-mm$method<-mm$really.big<-NULL
   mm[[1]]<-as.name("model.frame")
   mm<-eval(mm,sys.frame(sys.parent()))
-  x<-model.matrix(terms(x,data=data),mm)[,-1]
+  x<-model.matrix(terms(formula,data=data),mm)[,-1]
   y<-model.extract(mm,"response")
   wt<-model.extract(mm,"weights")
   if (is.null(wt))

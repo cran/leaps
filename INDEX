@@ -1,3 +1,3 @@
 leaps		Subset selection by `leaps and bounds' compatible with S
-subsets		More sophisticated function, including formula method
+regsubsets	More sophisticated function, including formula method
 
