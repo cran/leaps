@@ -3,13 +3,13 @@
 \usage{
 regsubsets(x=, ...)
 
-regsubsets.formula(x=, data=, weights=rep(1, length(y)), nbest=1, nvmax=8, force.in=NULL, force.out=NULL, intercept=TRUE, method=c("exhaustive", "backward", "forward", "seqrep"), really.big=FALSE,...)
+\method{regsubsets}{formula}(x=, data=, weights=NULL, nbest=1, nvmax=8, force.in=NULL, force.out=NULL, intercept=TRUE, method=c("exhaustive", "backward", "forward", "seqrep"), really.big=FALSE,...)
 
-regsubsets.default(x=, y=, weights=rep(1, length(y)), nbest=1, nvmax=8,
+\method{regsubsets}{default}(x=, y=, weights=rep(1, length(y)), nbest=1, nvmax=8,
 force.in=NULL, force.out=NULL, intercept=TRUE, method=c("exhaustive",
 "backward", "forward", "seqrep"), really.big=FALSE,...)
 
-summary.regsubsets(object,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL,...)
+\method{summary}{regsubsets}(object,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL,...)
 
 }
 \alias{regsubsets}

@@ -3,7 +3,7 @@
 %- Also NEED an `\alias' for EACH other topic documented here.
 \title{Graphical table of best subsets}
 \usage{
-plot.regsubsets(x, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r2"), col=gray(seq(0, 0.9, length = 10)),...)
+\method{plot}{regsubsets}(x, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r2"), col=gray(seq(0, 0.9, length = 10)),...)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{

@@ -1,9 +1,9 @@
 \name{leaps.setup}
 \title{Internal functions for leaps(), subsets()}
 \usage{
-leaps.setup(x,y,wt=rep(1,length(y)),force.in=NULL,force.out=NULL,intercept=TRUE,nvmax=8,nbest=1,warn.dep=T)
+leaps.setup(x,y,wt=rep(1,length(y)),force.in=NULL,force.out=NULL,intercept=TRUE,nvmax=8,nbest=1,warn.dep=TRUE)
 leaps.seqrep(leaps.obj)
-leaps.exhaustive(leaps.obj,really.big=TRUE)
+leaps.exhaustive(leaps.obj,really.big=FALSE)
 leaps.backward(leaps.obj)
 leaps.forward(leaps.obj)
 }
