@@ -3,15 +3,17 @@
 %- Also NEED an `\alias' for EACH other topic documented here.
 \title{Graphical table of best subsets}
 \usage{
-plot.regsubsets(obj, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r2"), col=gray(seq(0, 0.9, length = 10)))
+plot.regsubsets(x, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r2"), col=gray(seq(0, 0.9, length = 10)),...)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
- \item{obj}{\code{regsubsets} object }
+ \item{x}{\code{regsubsets} object }
  \item{labels}{variable names}
  \item{main}{title for plot }
  \item{scale}{which summary statistic to use for ordering plots}
- \item{col}{Colors: the last color should be close to but distinct from white }
+ \item{col}{Colors: the last color should be close to but distinct from
+   white }
+ \item{...}{other arguments}
 }
 \description{
 Plots a table of models showing which variables are in each model. The

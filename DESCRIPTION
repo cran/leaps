@@ -1,9 +1,9 @@
 Package: leaps
 Title: regression subset selection
-Version: 2.1-1
+Version: 2.2
 Author: Thomas Lumley <tlumley@u.washington.edu> using Fortran code
 	by Alan Miller
-Maintainer: Thomas Lumley <tlumley@u.washington.edu>
 Description: Regression subset selection including exhaustive search
 Depends:
 License: GPL version 2 or later
+Maintainer: Thomas Lumley <tlumley@u.washington.edu>
