@@ -1,0 +1,7 @@
+Package: leaps
+Version: 2.0
+Author: Thomas Lumley <thomas@biostat.washington.edu> using Fortran code
+	by Alan Miller
+Description: Regression subset selection including exhaustive search
+Depends:
+License: GPL version 2 or later

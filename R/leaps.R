@@ -2,13 +2,15 @@
 # R code for subset selection using
 # Alan Miller's FORTRAN routines
 #
+.First.lib <- function(lib, pkg) {
+          library.dynam("leaps", pkg, lib)
+        }
 
-library.dynam("leaps.so")
 
-make.names<-function(np){
-	if (np<27) letters[1:np] else as.character(1:np)
-}
 leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,force.out=NULL,intercept=TRUE,nvmax=8,nbest=1,warn.dep=T){
+  make.names<-function(np){
+	if (np<27) letters[1:np] else as.character(1:np)
+  }
   np<-NCOL(x)
   nn<-NROW(x)
   if (length(y)!=nn) stop("y and x different lengths")
@@ -90,14 +92,14 @@ ress=matrix(initr$ress,ncol=nbest),lopt=matrix(initr$lopt,ncol=nbest),
 nvmax=nvmax,nbest=nbest,nrbar=nrbar,il=il,ir=nvmax,vorder=initr$vorder,
 first=first,last=last,xnames=colnames(xx),force.in=(index==-1),
 force.out=(index==1),intercept=intercept,nullrss=nullrss))
- class(rval)<-"leaps"
+ class(rval)<-"subsets"
  invisible(rval)
 }
 
 
 leaps.exhaustive<-function(leaps.obj,really.big=FALSE){
-  if (!inherits(leaps.obj,"leaps")){
-    stop("Not a leaps object -- must run leaps.setup")
+  if (!inherits(leaps.obj,"subsets")){
+    stop("Not a subsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
   if (!really.big & (leaps.obj$np>50 || leaps.obj$nbest>40)) {
@@ -139,15 +141,15 @@ leaps.exhaustive<-function(leaps.obj,really.big=FALSE){
   rval$reorder<-leaps.obj$reorder
   rval$nullrss<-leaps.obj$nullrss
   rval$nn<-leaps.obj$nn
-  class(rval)<-"leaps"
+  class(rval)<-"subsets"
   if(rval$ier!=0) warning(paste("XHAUST returned error code",rval$ier))
   rval
 }
 
 
 leaps.backward<-function(leaps.obj){
-  if (!inherits(leaps.obj,"leaps")){
-    stop("Not a leaps object -- must run leaps.setup")
+  if (!inherits(leaps.obj,"subsets")){
+    stop("Not a subsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
   dimwk<-2*leaps.obj$last
@@ -163,15 +165,15 @@ leaps.backward<-function(leaps.obj){
   rval$reorder<-leaps.obj$reorder
   rval$nullrss<-leaps.obj$nullrss
   rval$nn<-leaps.obj$nn
-  class(rval)<-"leaps"
+  class(rval)<-"subsets"
   if(rval$ier!=0) warning(paste("BAKWRD returned error code",rval$ier))
   rval
 }
 
 
 leaps.forward<-function(leaps.obj){
-  if (!inherits(leaps.obj,"leaps")){
-    stop("Not a leaps object -- must run leaps.setup")
+  if (!inherits(leaps.obj,"subsets")){
+    stop("Not a subsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
   dimwk<-3*leaps.obj$last
@@ -194,8 +196,8 @@ leaps.forward<-function(leaps.obj){
 
 
 leaps.seqrep<-function(leaps.obj){
-  if (!inherits(leaps.obj,"leaps")){
-    stop("Not a leaps object -- must run leaps.setup")
+  if (!inherits(leaps.obj,"subsets")){
+    stop("Not a subsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
   dimwk<-3*leaps.obj$last
@@ -211,14 +213,14 @@ leaps.seqrep<-function(leaps.obj){
   rval$reorder<-leaps.obj$reorder
   rval$nullrss<-leaps.obj$nullrss
   rval$nn<-leaps.obj$nn
-  class(rval)<-"leaps"
+  class(rval)<-"subsets"
   if(rval$ier!=0) warning(paste("SEQREP returned error code",rval$ier))
   rval
 }
 
 
 
-print.leaps<-function(ll){
+print.subsets<-function(ll){
   cat("Subset selection object\n")
   if (!is.null(ll$call)) {
     cat("Call: ")
@@ -242,10 +244,13 @@ print.leaps<-function(ll){
   invisible(NULL)
 }
 
+print.summary.subsets<-function(obj){
+	print(obj$obj)
+	print(obj$outmat)
+}
 
-summary.leaps<-function(ll,all.best=TRUE,matrix=T,matrix.logical=F,show=T,df=NULL){
+summary.subsets<-function(ll,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL){
  triangle<-function(k) {j<-k-1;1+j*(j+1)/2}
- if (show) print(ll)
  nmodl<-ll$nbest*ll$nvmax
  if(all.best) nshow<-ll$nbest else nshow<-1
  if (!is.null(df)) n1<-df else n1<-ll$nn-ll$intercept
@@ -275,13 +280,6 @@ summary.leaps<-function(ll,all.best=TRUE,matrix=T,matrix.logical=F,show=T,df=NUL
      adjr2vec<-c(adjr2vec,1-vr*n1/(n1+ll$intercept-i))
      cpvec<-c(cpvec,ll$ress[i,j]/sigma2-(n1+ll$intercept-2*i))
      bicvec<-c(bicvec,(n1+ll$intercept)*log(vr)+i*log(n1+ll$intercept))
-     if (!matrix) {
-       outmat<-rbind(outmat,ll$xnames[ll$lopt[triangle(i):(triangle(i+1)-1),j]])
-     }
-   }
-   if(!matrix) {
-     cat(i-ll$intercept)
-     if (show) print(outmat[,-1,drop=F])
    }
  }
    rownames(rmat)<-rnames
@@ -290,12 +288,13 @@ summary.leaps<-function(ll,all.best=TRUE,matrix=T,matrix.logical=F,show=T,df=NUL
    reorder<-if (is.null(ll$reorder)) 1:NCOL(rmat) else c(1,1+ll$reorder)
    rmat<-rmat[,order(reorder),drop=F]
  if (matrix){
-   if (!matrix.logical) outmat<-ifelse(rmat,"*"," ") else rmat<-outmat
+   if (!matrix.logical) outmat<-ifelse(rmat,"*"," ") else outmat<-rmat
    rownames(outmat)<-outnames
    if (ll$intercept) outmat<-outmat[,-1,drop=F]
-   if (show) print(outmat)
  }
- invisible(list(which=rmat,rsq=rsqvec,rss=rssvec,adjr2=adjr2vec,cp=cpvec,bic=bicvec))
+ rval<-list(which=rmat,rsq=rsqvec,rss=rssvec,adjr2=adjr2vec,cp=cpvec,bic=bicvec,outmat=outmat,obj=ll)
+ class(rval)<-"summary.subsets"
+ rval
 }
   
 
@@ -313,8 +312,8 @@ subsets.formula<-function(formula,data,weights=rep(1,length(y)),nbest=1,nvmax=8,
   mm<-match.call()
   mm$nbest<-mm$nvmax<-mm$force.in<-mm$force.out<-mm$intercept<-mm$method<-mm$really.big<-NULL
   mm[[1]]<-as.name("model.frame")
-  mm<-eval(mm,sys.parent())  ##? should this be sys.parent(2)
-  x<-model.matrix(formula,mm)[,-1]
+  mm<-eval(mm,sys.frame(sys.parent()))
+  x<-model.matrix(terms(formula,data=data),mm)[,-1]
   y<-model.extract(mm,"response")
   wt<-model.extract(mm,"weights")
   a<-leaps.setup(x,y,wt=weights,nbest=nbest,nvmax=nvmax,force.in=force.in,force.out=force.out,intercept=intercept)
@@ -336,7 +335,7 @@ leaps<-function(x,y,wt=rep(1,NROW(x)),int=TRUE,method=c("Cp","adjr2","r2"),nbest
 	a<-leaps.setup(x,y,wt=wt,nbest=nbest,nvmax=NCOL(x)+int,intercept=int,warn.dep=FALSE)
 	if (strictly.compatible & any(a$lindep)) stop("leaps requires full-rank design matrix; use subsets()")
 	b<-leaps.exhaustive(a)
-	d<-summary(b,show=F)
+	d<-summary(b)
 	rval<-list(which=d$which)
 	if (int) rval$which<-rval$which[,-1,drop=F]
 	rval$label<-colnames(d$which)
