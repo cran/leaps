@@ -7,7 +7,8 @@
         }
 
 leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,
-                      force.out=NULL,intercept=TRUE,nvmax=8,nbest=1,warn.dep=T){
+                      force.out=NULL,intercept=TRUE,
+                      nvmax=8,nbest=1,warn.dep=TRUE){
   make.names<-function(np){
 	if (np<27) letters[1:np] else as.character(1:np)
   }
@@ -356,14 +357,14 @@ summary.regsubsets<-function(object,all.best=TRUE,matrix=TRUE,matrix.logical=FAL
     cn<-ll$xnames
     colnames(rmat)<-cn
     reorder<-if (is.null(ll$reorder)) 1:NCOL(rmat) else c(1,1+ll$reorder)
-    rmat<-rmat[,order(reorder),drop=F]
+    rmat<-rmat[,order(reorder),drop=FALSE]
     if (matrix){
         if (!matrix.logical)
             outmat<-ifelse(rmat,"*"," ")
         else
             outmat<-rmat
         rownames(outmat)<-outnames
-        if (ll$intercept) outmat<-outmat[,-1,drop=F]
+        if (ll$intercept) outmat<-outmat[,-1,drop=FALSE]
     }
     rval<-list(which=rmat,rsq=rsqvec,rss=rssvec,adjr2=adjr2vec,
                cp=cpvec,bic=bicvec,outmat=outmat,obj=ll)
@@ -455,7 +456,7 @@ leaps<-function(x,y,wt=rep(1,NROW(x)),int=TRUE,method=c("Cp","adjr2","r2"),
     d<-summary(b)
     rval<-list(which=d$which)
     if (int)
-        rval$which<-rval$which[,-1,drop=F]
+        rval$which<-rval$which[,-1,drop=FALSE]
     rval$label<-colnames(d$which)
     rval$size<-as.numeric(rownames(d$which))+int
     if (pmatch(method,c("Cp"),nomatch=0)==1){

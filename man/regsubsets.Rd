@@ -29,7 +29,7 @@ summary.regsubsets(object,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL
 \item{force.out}{index to columns of design matrix that should be in no models}
 \item{intercept}{Add an intercept?}
 \item{method}{Use exhaustive search, forward selection, backward selection or sequential replacement to search.}
-\item{really.big}{Must be T to perform exhaustive search on more than 50 variables.}
+\item{really.big}{Must be TRUE to perform exhaustive search on more than 50 variables.}
 
 \item{object}{regsubsets object}
 \item{all.best}{Show all the best subsets or just one of each size}
