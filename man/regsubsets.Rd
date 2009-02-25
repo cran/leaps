@@ -1,5 +1,7 @@
 \name{regsubsets}
 \title{functions for model selection}
+\description{Model selection by exhaustive search, forward or backward
+  stepwise, or sequential replacement}
 \usage{
 regsubsets(x=, ...)
 
@@ -8,6 +10,9 @@ regsubsets(x=, ...)
 \method{regsubsets}{default}(x=, y=, weights=rep(1, length(y)), nbest=1, nvmax=8,
 force.in=NULL, force.out=NULL, intercept=TRUE, method=c("exhaustive",
 "backward", "forward", "seqrep"), really.big=FALSE,...)
+
+\method{regsubsets}{biglm}(x,nbest=1,nvmax=8,force.in=NULL,
+method=c("exhaustive","backward", "forward", "seqrep"), really.big=FALSE,...)
 
 \method{summary}{regsubsets}(object,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL,...)
 
@@ -18,8 +23,9 @@ force.in=NULL, force.out=NULL, intercept=TRUE, method=c("exhaustive",
 \alias{print.summary.regsubsets}
 \alias{regsubsets.formula}
 \alias{summary.regsubsets}
+\alias{regsubsets.biglm}
 \arguments{
-\item{x}{design matrix or model formula for full model}
+\item{x}{design matrix or model formula for full model, or \code{biglm} object}
 \item{data}{Optional data frame}
 \item{y}{response vector}
 \item{weights}{weight vector}
@@ -36,20 +42,27 @@ force.in=NULL, force.out=NULL, intercept=TRUE, method=c("exhaustive",
 \item{matrix}{Show a matrix of the variables in each model or just summary
     statistics}
 \item{matrix.logical}{With \code{matrix=TRUE}, the matrix is logical
-    \code{TRUE}/\code{FALSE} or string \code{"*"}/code{" "}}
+    \code{TRUE}/\code{FALSE} or string \code{"*"}/\code{" "}}
 \item{df}{Specify a number of degrees of freedom for the summary
   statistics. The default is \code{n-1}}
 \item{...}{Other arguments for future methods}
 }
-\description{
-Generic function for regression subset selection with methods for formula and matrix arguments. 
+\details{
+
+Since this function returns separate best models of all sizes up to
+\code{nvmax} and since different model selection criteria such as AIC,
+BIC, ... differ only in how models of different sizes are compared, the
+results do not depend on the choice of cost-complexity tradeoff.
+
+When \code{x} is a \code{biglm} object it is assumed to be the full
+model, so \code{force.out} is not relevant. If there is an intercept it
+is forced in by default; specify a \code{force.in} as a logical vector
+with \code{FALSE} as the first element to allow the intercept to be dropped.
 }
 \value{
 An object of class "regsubsets" containing no user-serviceable parts. It is designed to be processed by \code{\link{summary.regsubsets}}. 
 }
-\note{
-This function improves on \code{\link{leaps}} in several ways.  The design matrix need not be of full rank. The ability to restrict \code{nvmax} speeds up exhaustive searches considerably. There is no hard-coded limit to the number of variables.
-}
+
 \seealso{
 \code{\link{leaps}}
 }

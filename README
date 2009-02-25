@@ -1,4 +1,4 @@
-This library performs an exhaustive search for the best subsets of a given
+This package performs an exhaustive search for the best subsets of a given
 set of potential regressors, using a branch-and-bound algorithm, and also 
 performs searches using a number of less time-consuming techniques. It is
 designed to replace the "leaps()" command in S.  It is based on FORTRAN77
@@ -7,13 +7,16 @@ code by Alan Miller of CSIRO Division of Mathematics & Statistics
 book "Subset Selection in Regression".  Parts of the code have been
 published in the Applied Statistics algorithms series. 
 
-There are several minor but useful improvements over S implementation. 
+There are several minor but useful improvements over the S implementation.
 Firstly, there is no hard-coded limit to the number of variables.
-Secondly, it is possible to restrict the search to subsets of at most a
-specified size, potentially giving a large saving in time. Thirdly, it is
-not necessary that the matrix of possible predictors be of full rank. This
-is particularly useful when there are more predictors than cases and the
-best "small"  model is wanted. 
+Secondly, it is possible to restrict the search to subsets of at most
+a specified size, potentially giving a large saving in time. Thirdly,
+it is not necessary that the matrix of possible predictors be of full
+rank. This is particularly useful when there are more predictors than
+cases and the best "small" model is wanted. Fourthly, when there are
+many more cases than predictors, the search can be run on the output
+of biglm() and the time and memory use are then independent of the
+number of observations.
 
 
 Thomas Lumley

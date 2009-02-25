@@ -22,7 +22,8 @@ leaps() performs an exhaustive search for the best subsets of the variables in x
 A list with components
 \item{which}{logical matrix. Each row can be used to select the columns of \code{x} in the respective model}
 \item{size}{Number of variables, including intercept if any, in the model}
-\item{cp}{or \code{adjr2} or \code{r2} is the value of the chosen model selectionstatistic for each model}
+\item{cp}{or \code{adjr2} or \code{r2} is the value of the chosen model
+  selection statistic for each model}
 \item{label}{vector of names for the columns of x}
 }
 \references{
@@ -33,8 +34,10 @@ With \code{strictly.compatible=T} the function will stop with an error if \code{
 }
 
 \seealso{
-\code{\link{regsubsets}}, \code{\link{regsubsets.formula}}, \code{\link{regsubsets.default}}}
+\code{\link{regsubsets}}, \code{\link{regsubsets.formula}},
+\code{\link{regsubsets.default}}
 }
+
 \examples{
 x<-matrix(rnorm(100),ncol=4)
 y<-rnorm(25)

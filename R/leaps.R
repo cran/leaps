@@ -2,9 +2,89 @@
 # R code for model selection using
 # Alan Miller's FORTRAN routines
 #
-.First.lib <- function(lib, pkg) {
-          library.dynam("leaps", pkg, lib)
-        }
+
+
+leaps.from.biglm<-function(x, force.in=NULL,
+                      nvmax=8,nbest=1,warn.dep=TRUE){
+    make.names<-function(np){
+	if (np<27) letters[1:np] else as.character(1:np)
+  }
+  if(is.null(force.in) && attr(x$terms,"intercept")!=0) force.in<-1
+  nn<-x$n
+  np<-length(x$qr$D)
+  index<-rep(0,np)
+  names(index)<-x$names
+  index[force.in]<--1
+  force.in<-(index==-1) ## make force.in, force.out logical vectors
+  ii<-order(index)
+  force.in<-force.in[ii]
+  ones<-rep(1,np)
+  names(ones)<-colnames(x)
+  first<-1+sum(ones[force.in])
+  last<-np
+  nvmax<-min(nvmax,np)
+
+  vorder<-1:np
+  il<-nvmax*(nvmax+1)/2
+  nrbar<-np*(np-1)/2
+  qrleaps<-x$qr
+  tolset<-.Fortran("tolset",as.integer(np),
+                   as.integer(nrbar),qrleaps$D,qrleaps$rbar,
+                   tol=numeric(np),numeric(np),ier=as.integer(0), PACKAGE="leaps")
+  if (tolset$ier!=0)
+      warning(paste("TOLSET returned error code",tolset$ier))
+  ss<-.Fortran("ssleaps",as.integer(np),qrleaps$D,
+               qrleaps$thetab,qrleaps$ss,rss=numeric(np),
+               ier=as.integer(0), PACKAGE="leaps")
+  if (ss$ier!=0)
+      warning(paste("SS returned error code",ss$ier))
+ sing<-.Fortran("sing",np=as.integer(np),nrbar=as.integer(nrbar),
+                d=qrleaps$D,rbar=qrleaps$rbar,thetab=qrleaps$thetab,
+                sserr=qrleaps$ss,tol=tolset$tol,lindep=logical(np),
+                work=numeric(np),ier=as.integer(0), PACKAGE="leaps")
+   if (sing$ier>0)
+       warning(paste("SING returned error code",sing$ier))
+  sing$work<-NULL
+  if(any(sing$lindep)) {
+      if (warn.dep)
+          warning(paste(sum(sing$lindep)," linear dependencies found"))
+      if (any(sing$lindep[-1] & force.in)) stop("Linear dependency among variables forced in")
+      rightorder<-sing$lindep 
+      if (any((c(rightorder,1)-c(0,rightorder))<0)) {
+          stop("Linear dependences in biglm fit: this can't happen")
+      }
+      lastsafe<-max((1:np)[!rightorder])
+      if (lastsafe<min(nvmax,last)) {
+          nvmax<-lastsafe
+          if (warn.dep)
+              warning(paste("nvmax reduced to ",nvmax))
+      }
+  }
+  if (any(sing$lindep)){
+      ss<-.Fortran("ssleaps",as.integer(np),sing$d,sing$thetab,
+                   sing$sserr,rss=numeric(np),ier=as.integer(0),PACKAGE="leaps")
+  	if (ss$ier!=0)
+            warning(paste("SS returned error code",ss$ier))
+  }
+  initr<-.Fortran("initr",as.integer(np),as.integer(nvmax),as.integer(nbest),
+                  bound=numeric(np),ress=numeric(nbest*nvmax),as.integer(nvmax),
+                  lopt=integer(nbest*il),as.integer(il),vorder=as.integer(vorder),
+                  ss$rss,ier=as.integer(0), PACKAGE="leaps")
+  if (initr$ier!=0)
+      warning(paste("INITR returned error code",initr$ier))
+  nullrss<- ss$rss[1]
+  rval<-c(sing,list(nn=nn,rss=ss$rss,bound=initr$bound,
+                    ress=matrix(initr$ress,ncol=nbest),
+                    lopt=matrix(initr$lopt,ncol=nbest),
+                    nvmax=nvmax,nbest=nbest,nrbar=nrbar,il=il,
+                    ir=nvmax,vorder=initr$vorder,
+                    first=first,last=last,xnames=x$names,
+                    force.in=(index==-1),force.out=(index==1),
+                    intercept=TRUE,nullrss=nullrss))
+  class(rval)<-"regsubsets"
+  invisible(rval)
+}
+
 
 leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,
                       force.out=NULL,intercept=TRUE,
@@ -387,6 +467,26 @@ regsubsets.default<-function(x,y,weights=rep(1,length(y)),nbest=1,
     a<-leaps.setup(x,y,wt=weights,nbest=nbest,nvmax=nvmax,
                    force.in=force.in,force.out=force.out,
                    intercept=intercept)
+    switch(1+pmatch(method[1],
+                    c("exhaustive","backward","forward","seqrep"),
+                    nomatch=0),
+           stop(paste("Ambiguous or unrecognised method name :",method)),
+           leaps.exhaustive(a,really.big=really.big),
+           leaps.backward(a),
+           leaps.forward(a),
+           leaps.seqrep(a))
+}
+
+
+
+regsubsets.biglm<-function(x,nbest=1,
+                             nvmax=8,force.in=NULL,
+                             method=c("exhaustive","backward","forward","seqrep"),
+                             really.big=FALSE,...)
+{
+    
+    a<-leaps.from.biglm(x,nbest=nbest,nvmax=nvmax,
+                   force.in=force.in)
     switch(1+pmatch(method[1],
                     c("exhaustive","backward","forward","seqrep"),
                     nomatch=0),
