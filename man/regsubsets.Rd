@@ -16,6 +16,9 @@ method=c("exhaustive","backward", "forward", "seqrep"), really.big=FALSE,...)
 
 \method{summary}{regsubsets}(object,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL,...)
 
+\method{coef}{regsubsets}(object,id,vcov=FALSE,...)
+\method{vcov}{regsubsets}(object,id,...)
+
 }
 \alias{regsubsets}
 \alias{regsubsets.default}
@@ -23,6 +26,8 @@ method=c("exhaustive","backward", "forward", "seqrep"), really.big=FALSE,...)
 \alias{print.summary.regsubsets}
 \alias{regsubsets.formula}
 \alias{summary.regsubsets}
+\alias{coef.regsubsets}
+\alias{vcov.regsubsets}
 \alias{regsubsets.biglm}
 \arguments{
 \item{x}{design matrix or model formula for full model, or \code{biglm} object}
@@ -45,22 +50,48 @@ method=c("exhaustive","backward", "forward", "seqrep"), really.big=FALSE,...)
     \code{TRUE}/\code{FALSE} or string \code{"*"}/\code{" "}}
 \item{df}{Specify a number of degrees of freedom for the summary
   statistics. The default is \code{n-1}}
+\item{id}{Which model or models (ordered as in the summary output) to
+  return coefficients and variance matrix for}
+\item{vcov}{If \code{TRUE}, return the variance-covariance matrix as an attribute}
 \item{...}{Other arguments for future methods}
 }
 \details{
 
 Since this function returns separate best models of all sizes up to
 \code{nvmax} and since different model selection criteria such as AIC,
-BIC, ... differ only in how models of different sizes are compared, the
+BIC, CIC, DIC, ... differ only in how models of different sizes are compared, the
 results do not depend on the choice of cost-complexity tradeoff.
 
 When \code{x} is a \code{biglm} object it is assumed to be the full
 model, so \code{force.out} is not relevant. If there is an intercept it
 is forced in by default; specify a \code{force.in} as a logical vector
-with \code{FALSE} as the first element to allow the intercept to be dropped.
+with \code{FALSE} as the first element to allow the intercept to be
+dropped.
+
+The model search does not actually fit each model, so the returned
+object does not contain coefficients or standard errors.  Coefficients
+and the variance-covariance matrix for one or model models can be
+obtained with the \code{coef} and \code{vcov} methods.
 }
 \value{
-An object of class "regsubsets" containing no user-serviceable parts. It is designed to be processed by \code{\link{summary.regsubsets}}. 
+\code{regsubsets} returns an object of class "regsubsets" containing no
+user-serviceable parts. It is designed to be processed by
+\code{\link{summary.regsubsets}}.
+
+\code{summary.regsubsets} returns an object with elements
+\item{which}{A logical matrix indicating which elements are in each
+  model}
+\item{rsq}{The r-squared for each model}
+\item{rss}{Residual sum of squares for each model}
+\item{adjr2}{Adjusted r-squared}
+\item{cp}{Mallows' Cp}
+\item{bic}{Schwartz's information criterion, BIC}
+\item{outmat}{A version of the \code{which} component that is formatted
+  for printing}
+\item{obj}{A copy of the \code{regsubsets} object}
+
+The \code{coef} method returns a coefficient vector or list of vectors,
+the \code{vcov} method returns a matrix or list of matrices.
 }
 
 \seealso{
@@ -70,7 +101,10 @@ An object of class "regsubsets" containing no user-serviceable parts. It is desi
 data(swiss)
 a<-regsubsets(as.matrix(swiss[,-1]),swiss[,1])
 summary(a)
-b<-regsubsets(Fertility~.,data=swiss)
-summary(a)
+b<-regsubsets(Fertility~.,data=swiss,nbest=2)
+summary(b)
+
+coef(a, 1:3)
+vcov(a, 3)
 }
 \keyword{regression}

@@ -16,7 +16,14 @@ leaps(x=, y=, wt=rep(1, NROW(x)), int=TRUE, method=c("Cp", "adjr2", "r2"), nbest
 \item{strictly.compatible}{Implement misfeatures of leaps() in S}
 }
 \description{
-leaps() performs an exhaustive search for the best subsets of the variables in x for predicting y in linear regression, using an efficient branch-and-bound algorithm.  It is a compatibility wrapper for \code{\link{regsubsets}} does the same thing better.
+leaps() performs an exhaustive search for the best subsets of the
+variables in x for predicting y in linear regression, using an efficient
+branch-and-bound algorithm.  It is a compatibility wrapper for
+\code{\link{regsubsets}} does the same thing better.
+
+Since the algorithm returns a best model of each size, the results do
+not depend on a penalty model for model size: it doesn't make any
+difference whether you want to use AIC, BIC, CIC, DIC, ...
 }
 \value{
 A list with components

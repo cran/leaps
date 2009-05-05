@@ -7,4 +7,7 @@ S3method(summary,regsubsets)
 S3method(print,summary.regsubsets)
 S3method(print,regsubsets)
 S3method(plot,regsubsets)
+S3method(coef,regsubsets)
+S3method(vcov,regsubsets)
+
 

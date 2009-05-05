@@ -571,7 +571,51 @@ leaps<-function(x,y,wt=rep(1,NROW(x)),int=TRUE,method=c("Cp","adjr2","r2"),
     rval
 }
 
+vcov.regsubsets<-function(object, id, ...){
+  betas<-coef(object,id, vcov=TRUE)
+  if (length(id)==1)
+    attr(betas,"vcov")
+  else
+    lapply(betas, function(beta) attr(beta,"vcov"))
+}
 
+coef.regsubsets<-function(object, id,vcov=FALSE,...){
+   s<-summary(object)
+   invars<-s$which[id,,drop=FALSE]
+   betas<-vector("list",length(id))
+   for(i in 1:length(id)){
+     thismodel<-which(invars[i,])
+     qr<-.Fortran("REORDR", np=as.integer(object$np), nrbar=as.integer(object$nrbar),
+                  vorder=as.integer(object$vorder),
+                  d=as.double(object$d), rbar=as.double(object$rbar), thetab=as.double(object$thetab),
+                  rss=as.double(object$rss), tol=as.double(object$tol), list=as.integer(thismodel),
+                  n=as.integer(length(thismodel)),pos1=1L, ier=integer(1))
+     beta<-.Fortran("REGCF",np=as.integer(qr$np), nrbar=as.integer(qr$nrbar),
+                    d=as.double(qr$d), rbar=as.double(qr$rbar), thetab=as.double(qr$thetab),tol=as.double(qr$tol),
+                    beta=numeric(length(thismodel)), nreq=as.integer(length(thismodel)), ier=numeric(1))$beta
+     names(beta)<-object$xnames[qr$vorder[1:qr$n]]
+     reorder<-order(qr$vorder[1:qr$n])
+     beta<-beta[reorder]
+     if(vcov){
+       p<-length(thismodel)
+       R<-diag(qr$np)
+       R[row(R)>col(R)]<-qr$rbar
+       R<-t(R)
+       R<-sqrt(qr$d)*R
+       R<-R[1:p,1:p,drop=FALSE]
+       R<-chol2inv(R)
+       dimnames(R)<-list(object$xnames[qr$vorder[1:p]],object$xnames[qr$vorder[1:p]])
+       V<-R*s$rss[id[i]]/(object$nn-p)
+       V<-V[reorder,reorder]
+       attr(beta,"vcov")<-V
+     }
+     betas[[i]]<-beta
+   }
+   if(length(id)==1)
+     beta
+   else
+     betas
+}
 
 
 
