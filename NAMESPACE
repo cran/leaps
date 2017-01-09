@@ -1,4 +1,7 @@
 useDynLib(leaps)
+importFrom("grDevices", "gray")
+importFrom("graphics", "axis", "box", "image", "par", "title")
+importFrom("stats", "coef", "model.extract", "model.matrix", "terms")
 export(regsubsets,leaps)
 S3method(regsubsets, biglm)
 S3method(regsubsets,formula)

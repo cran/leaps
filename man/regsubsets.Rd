@@ -5,14 +5,20 @@
 \usage{
 regsubsets(x=, ...)
 
-\method{regsubsets}{formula}(x=, data=, weights=NULL, nbest=1, nvmax=8, force.in=NULL, force.out=NULL, intercept=TRUE, method=c("exhaustive", "backward", "forward", "seqrep"), really.big=FALSE,...)
+\method{regsubsets}{formula}(x=, data=, weights=NULL, nbest=1, nvmax=8,
+ force.in=NULL, force.out=NULL, intercept=TRUE,
+ method=c("exhaustive", "backward", "forward", "seqrep"),
+ really.big=FALSE,
+ nested=(nbest==1),...)
 
 \method{regsubsets}{default}(x=, y=, weights=rep(1, length(y)), nbest=1, nvmax=8,
-force.in=NULL, force.out=NULL, intercept=TRUE, method=c("exhaustive",
-"backward", "forward", "seqrep"), really.big=FALSE,...)
+force.in=NULL, force.out=NULL, intercept=TRUE,
+ method=c("exhaustive","backward", "forward", "seqrep"),
+really.big=FALSE,nested=(nbest==1),...)
 
 \method{regsubsets}{biglm}(x,nbest=1,nvmax=8,force.in=NULL,
-method=c("exhaustive","backward", "forward", "seqrep"), really.big=FALSE,...)
+method=c("exhaustive","backward", "forward", "seqrep"),
+really.big=FALSE,nested=(nbest==1),...)
 
 \method{summary}{regsubsets}(object,all.best=TRUE,matrix=TRUE,matrix.logical=FALSE,df=NULL,...)
 
@@ -40,7 +46,10 @@ method=c("exhaustive","backward", "forward", "seqrep"), really.big=FALSE,...)
 \item{force.out}{index to columns of design matrix that should be in no models}
 \item{intercept}{Add an intercept?}
 \item{method}{Use exhaustive search, forward selection, backward selection or sequential replacement to search.}
-\item{really.big}{Must be TRUE to perform exhaustive search on more than 50 variables.}
+\item{really.big}{Must be TRUE to perform exhaustive search on more than
+  50 variables.}
+\item{nested}{See the Note below: if \code{nested=FALSE}, models with
+  columns 1, 1 and 2, 1-3, and so on, will also be considered} 
 
 \item{object}{regsubsets object}
 \item{all.best}{Show all the best subsets or just one of each size}
@@ -73,6 +82,19 @@ object does not contain coefficients or standard errors.  Coefficients
 and the variance-covariance matrix for one or model models can be
 obtained with the \code{coef} and \code{vcov} methods.
 }
+\note{
+As part of the setup process, the code initially fits models with the
+first variable in \code{x}, the first two, the first three, and so on.
+For forward and backward selection it is possible that the model with the \code{k}
+first variables will be better than the model with \code{k}
+variables from the selection algorithm. If it is, the model with the
+first \code{k} variables will be returned, with a warning. This can
+happen for forward and backward selection. It (obviously) can't for
+exhaustive search.
+
+With \code{nbest=1} you can avoid these extra models with
+  \code{nested=TRUE}, which is the default.
+  }
 \value{
 \code{regsubsets} returns an object of class "regsubsets" containing no
 user-serviceable parts. It is designed to be processed by

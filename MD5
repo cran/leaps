@@ -1,0 +1,14 @@
+6f60e67ae2ea6f3ec665fe605f814564 *DESCRIPTION
+215096304ce14b66d0e5baedff19afcf *INDEX
+52b33656691838b94323375390d3a458 *NAMESPACE
+008a51fa15c009d8aa9ce637418003b1 *NEWS
+02a85b29e9139c0ddccdef471f52598a *R/leaps.R
+524f2fad267bf9c663cf1ce17a4c31bd *R/plot.subsets.R
+86a6958a0aa65e3fbfbcd2224c176b39 *README
+c15b0a0ad24e82ee1672dec66ab2c20d *man/leaps.Rd
+2ea9354dd85b221d0536b5ca6822b1a4 *man/leaps.setup.Rd
+2b4f6ad7ca675e57beb09dbadaf61edd *man/plot.regsubsets.Rd
+72db355bf4ca551d05df2a7088869fa0 *man/regsubsets.Rd
+b081bbaacb14aaa6e8b4fc14004e37eb *src/leaps.f
+2e6d40ebacfe798eed6e3e808305bf48 *src/leapshdr.f
+71910211a4fdf8f057fdff1fc26b2bed *tests/nested.R

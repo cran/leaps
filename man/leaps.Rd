@@ -1,7 +1,8 @@
 \name{leaps}
 \title{all-subsets regressiom}
 \usage{
-leaps(x=, y=, wt=rep(1, NROW(x)), int=TRUE, method=c("Cp", "adjr2", "r2"), nbest=10, names=NULL, df=NROW(x), strictly.compatible=TRUE)
+leaps(x=, y=, wt=rep(1, NROW(x)), int=TRUE, method=c("Cp", "adjr2", "r2"), nbest=10,
+ names=NULL, df=NROW(x), strictly.compatible=TRUE)
 }
 \alias{leaps}
 \arguments{

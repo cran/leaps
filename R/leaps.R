@@ -130,7 +130,7 @@ leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,
 	wt=as.double(wt),tx=t(xx),y=as.double(y),d=numeric(np),
 	rbar=numeric(nrbar),
         thetab=numeric(np),sserr=numeric(1),ier=as.integer(0),
-        PACKAGE="leaps",DUP=FALSE)
+        PACKAGE="leaps")
   if (qrleaps$ier!=0)
       warning(paste("MAKEQR returned error code",qrleaps$ier))
   qrleaps$tx<-NULL
@@ -200,6 +200,14 @@ leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,
   invisible(rval)
 }
 
+warn.extra<-function(obj){ 
+	i<-which(obj$ress<obj$rss*(1-1e-8),arr.ind=TRUE)[,1]
+    if(length(i)) 
+    	warning(paste0("model with initial (",paste(i-obj$int,collapse=","),") variables was better, and is reported"))
+    invisible(i)	
+}
+
+
 
 leaps.exhaustive<-function(leaps.obj,really.big=FALSE){
     if (!inherits(leaps.obj,"regsubsets")){
@@ -251,11 +259,12 @@ leaps.exhaustive<-function(leaps.obj,really.big=FALSE){
 }
 
 
-leaps.backward<-function(leaps.obj){
+leaps.backward<-function(leaps.obj,nested){
   if (!inherits(leaps.obj,"regsubsets")){
       stop("Not a regsubsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
+  if(nested) leaps.obj$nbest<-0
   dimwk<-2*leaps.obj$last
   rval<-.Fortran("bakwrd",np=as.integer(leaps.obj$np),
                  nrbar=as.integer(leaps.obj$nrbar),d=leaps.obj$d,
@@ -282,17 +291,24 @@ leaps.backward<-function(leaps.obj){
   rval$nullrss<-leaps.obj$nullrss
   rval$nn<-leaps.obj$nn
   class(rval)<-"regsubsets"
+  if(nested) {
+      rval$nbest<-1
+      rval$lopt[]<-rval$vorder[rval$lopt]
+      rval$ress<-matrix(rval$rss,ncol=1)
+  }
   if(rval$ier!=0)
       warning(paste("BAKWRD returned error code",rval$ier))
+  warn.extra(rval)
   rval
 }
 
 
-leaps.forward<-function(leaps.obj){
+leaps.forward<-function(leaps.obj,nested){
   if (!inherits(leaps.obj,"regsubsets")){
       stop("Not a regsubsets object -- must run leaps.setup")
   }
   nbest<-leaps.obj$nbest
+  if(nested) leaps.obj$nbest<-0
   dimwk<-3*leaps.obj$last
   rval<-.Fortran("forwrd",np=as.integer(leaps.obj$np),
                  nrbar=as.integer(leaps.obj$nrbar),
@@ -318,9 +334,15 @@ leaps.forward<-function(leaps.obj){
   rval$reorder<-leaps.obj$reorder
   rval$nullrss<-leaps.obj$nullrss
   rval$nn<-leaps.obj$nn
+  if(nested) {
+      rval$nbest<-1
+      rval$lopt[]<-rval$vorder[rval$lopt]
+      rval$ress<-matrix(rval$rss,ncol=1)
+  }
   class(rval)<-"regsubsets"
   if(rval$ier!=0)
       warning(paste("FORWARD returned error code",rval$ier))
+  warn.extra(rval)
   rval
 }
 
@@ -461,7 +483,7 @@ regsubsets.default<-function(x,y,weights=rep(1,length(y)),nbest=1,
                              nvmax=8,force.in=NULL,force.out=NULL,
                              intercept=TRUE,
                              method=c("exhaustive","backward","forward","seqrep"),
-                             really.big=FALSE,...)
+                             really.big=FALSE,nested=(nbest==1),...)
 {
     
     a<-leaps.setup(x,y,wt=weights,nbest=nbest,nvmax=nvmax,
@@ -472,8 +494,8 @@ regsubsets.default<-function(x,y,weights=rep(1,length(y)),nbest=1,
                     nomatch=0),
            stop(paste("Ambiguous or unrecognised method name :",method)),
            leaps.exhaustive(a,really.big=really.big),
-           leaps.backward(a),
-           leaps.forward(a),
+           leaps.backward(a,nested),
+           leaps.forward(a,nested),
            leaps.seqrep(a))
 }
 
@@ -482,7 +504,7 @@ regsubsets.default<-function(x,y,weights=rep(1,length(y)),nbest=1,
 regsubsets.biglm<-function(x,nbest=1,
                              nvmax=8,force.in=NULL,
                              method=c("exhaustive","backward","forward","seqrep"),
-                             really.big=FALSE,...)
+                             really.big=FALSE,nested=(nbest==1),...)
 {
     
     a<-leaps.from.biglm(x,nbest=nbest,nvmax=nvmax,
@@ -492,8 +514,8 @@ regsubsets.biglm<-function(x,nbest=1,
                     nomatch=0),
            stop(paste("Ambiguous or unrecognised method name :",method)),
            leaps.exhaustive(a,really.big=really.big),
-           leaps.backward(a),
-           leaps.forward(a),
+           leaps.backward(a,nested),
+           leaps.forward(a,nested),
            leaps.seqrep(a))
 }
 
@@ -501,7 +523,7 @@ regsubsets.biglm<-function(x,nbest=1,
 regsubsets.formula<-function(x,data,weights=NULL,nbest=1,nvmax=8,force.in=NULL,
                              force.out=NULL,intercept=TRUE,
                              method=c("exhaustive","backward","forward","seqrep"),
-                             really.big=FALSE,...){
+                             really.big=FALSE,nested=(nbest==1),...){
   formula<-x
   rm(x)
   mm<-match.call()
@@ -525,8 +547,8 @@ regsubsets.formula<-function(x,data,weights=NULL,nbest=1,nvmax=8,force.in=NULL,
                         nomatch=0),
                stop(paste("Ambiguous or unrecognised method name :",method)),
                leaps.exhaustive(a,really.big),
-               leaps.backward(a),
-               leaps.forward(a),
+               leaps.backward(a,nested),
+               leaps.forward(a,nested),
                leaps.seqrep(a))
   rval$call<-sys.call(sys.parent())
   rval

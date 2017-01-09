@@ -2,10 +2,9 @@ This package performs an exhaustive search for the best subsets of a given
 set of potential regressors, using a branch-and-bound algorithm, and also 
 performs searches using a number of less time-consuming techniques. It is
 designed to replace the "leaps()" command in S.  It is based on FORTRAN77
-code by Alan Miller of CSIRO Division of Mathematics & Statistics
-(<Alan.Miller@vic.cmis.csiro.au>) which is described in more detail in his
-book "Subset Selection in Regression".  Parts of the code have been
-published in the Applied Statistics algorithms series. 
+code by Alan Miller of CSIRO Division of Mathematics & Statistics, which is
+described in more detail in his book "Subset Selection in Regression". 
+Parts of the code have been published in the Applied Statistics algorithms series. 
 
 There are several minor but useful improvements over the S implementation.
 Firstly, there is no hard-coded limit to the number of variables.
@@ -17,11 +16,4 @@ cases and the best "small" model is wanted. Fourthly, when there are
 many more cases than predictors, the search can be run on the output
 of biglm() and the time and memory use are then independent of the
 number of observations.
-
-
-Thomas Lumley
-Biostatistics, University of Washington, Seattle
-tlumley@u.washington.edu
-
-
 
