@@ -3,7 +3,7 @@
 %- Also NEED an `\alias' for EACH other topic documented here.
 \title{Graphical table of best subsets}
 \usage{
-\method{plot}{regsubsets}(x, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r2"), col=gray(seq(0, 0.9, length = 10)),...)
+\method{plot}{regsubsets}(x, labels=obj$xnames, main=NULL, scale=c("bic", "Cp", "adjr2", "r2"), col=gray(seq(0, 0.9, length = 10)), digits=2,...)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
@@ -13,6 +13,7 @@
  \item{scale}{which summary statistic to use for ordering plots}
  \item{col}{Colors: the last color should be close to but distinct from
    white }
+ \item{digits}{amount of digits to display on the y axis }
  \item{...}{other arguments}
 }
 \description{
