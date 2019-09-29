@@ -1,6 +1,6 @@
 plot.regsubsets<-function(x,labels=obj$xnames,main=NULL,
                           scale=c("bic","Cp","adjr2","r2"),
-                          col=gray(seq(0,0.9,length=10)),...){
+                          col=gray(seq(0,0.9,length=10)),digits=2,...){
     obj<-x
     lsum<-summary(obj)
     par(mar=c(7,5,6,3)+0.1)
@@ -30,7 +30,7 @@ plot.regsubsets<-function(x,labels=obj$xnames,main=NULL,
     on.exit(par(las=laspar))
     par(las=2)
     axis(1,at=1:np,labels=labels)
-    axis(2,at=1:nmodels,labels=signif(yscale[index],2))
+    axis(2,at=1:nmodels,labels=signif(yscale[index],digits))
     
     if (!is.null(main))
         title(main=main)
