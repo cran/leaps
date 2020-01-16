@@ -38,17 +38,17 @@ c$$$C     Add extension .dat if none has been entered,
 c$$$C     detected by the lack of a '.'
 c$$$C
 c$$$      IF (INDEX(FNAME, '.') .EQ. 0) THEN
-c$$$	IPOS = INDEX(FNAME, ' ')
-c$$$	FNAME = FNAME(1:IPOS-1) // '.dat'
+c$$$    IPOS = INDEX(FNAME, ' ')
+c$$$    FNAME = FNAME(1:IPOS-1) // '.dat'
 c$$$      END IF
 c$$$C
 c$$$C     Check that file exists.
 c$$$C
 c$$$      INQUIRE(FILE=FNAME, EXIST=OK)
 c$$$      IF (.NOT. OK) THEN
-c$$$	WRITE(*, 910) FNAME
+c$$$    WRITE(*, 910) FNAME
 c$$$  910   FORMAT(' *** File not found - ', a, ' **')
-c$$$	GO TO 10
+c$$$    GO TO 10
 c$$$      END IF
 c$$$C
 c$$$C     Display first part of file.
@@ -56,8 +56,8 @@ c$$$C
 c$$$      OPEN(10, FILE=FNAME, STATUS='OLD')
 c$$$      WRITE(*, *)'Start of your data file follows'
 c$$$      DO 20 I = 1, 12
-c$$$	READ(10, '(A)') TEXT
-c$$$	WRITE(*, '(1X, A)') TEXT
+c$$$    READ(10, '(A)') TEXT
+c$$$    WRITE(*, '(1X, A)') TEXT
 c$$$   20 CONTINUE
 c$$$      REWIND 10
 c$$$C
@@ -77,12 +77,12 @@ c$$$C
 c$$$      WRITE(*, *)'Is dependant variable at end ? (Y/N): '
 c$$$      READ(*, *) ANS
 c$$$      IF (ANS .EQ. 'Y' .OR. ANS .EQ. 'y') THEN
-c$$$	YPOS = K+1
+c$$$    YPOS = K+1
 c$$$      ELSE
-c$$$	WRITE(*, *)'Enter no. of position of dependant variable: '
-c$$$	READ(*, *) YPOS
-c$$$	IF (YPOS .LT. 1) YPOS = 1
-c$$$	IF (YPOS .GT. K) YPOS = K + 1
+c$$$    WRITE(*, *)'Enter no. of position of dependant variable: '
+c$$$    READ(*, *) YPOS
+c$$$    IF (YPOS .LT. 1) YPOS = 1
+c$$$    IF (YPOS .GT. K) YPOS = K + 1
 c$$$      END IF
 c$$$C
 c$$$C     Enter variable names, read them from file, or set defaults.
@@ -91,54 +91,54 @@ c$$$      VNAME(0) = 'Constant'
 c$$$      WRITE(*, *)'Are variable names in data file ? (Y/N): '
 c$$$      READ(*, *) ANS
 c$$$      IF (ANS .EQ. 'Y' .OR. ANS .EQ. 'y') THEN
-c$$$	WRITE(*, *)'Which line do names start on ? '
-c$$$	READ(*, *) LINE1
-c$$$	IF (LINE1 .GT. 1) THEN
-c$$$	  DO 30 I = 1, LINE1-1
+c$$$    WRITE(*, *)'Which line do names start on ? '
+c$$$    READ(*, *) LINE1
+c$$$    IF (LINE1 .GT. 1) THEN
+c$$$      DO 30 I = 1, LINE1-1
 c$$$   30     READ(10, *)
-c$$$	END IF
-c$$$	IF (YPOS .GT. K) THEN
-c$$$	  READ(10, *) (VNAME(I),I=1,K), YNAME
-c$$$	ELSE IF (YPOS .EQ. 1) THEN
-c$$$	  READ(10, *) YNAME, (VNAME(I),I=1,K)
-c$$$	ELSE
-c$$$	  READ(10, *) (VNAME(I),I=1,YPOS-1), YNAME,
+c$$$    END IF
+c$$$    IF (YPOS .GT. K) THEN
+c$$$      READ(10, *) (VNAME(I),I=1,K), YNAME
+c$$$    ELSE IF (YPOS .EQ. 1) THEN
+c$$$      READ(10, *) YNAME, (VNAME(I),I=1,K)
+c$$$    ELSE
+c$$$      READ(10, *) (VNAME(I),I=1,YPOS-1), YNAME,
 c$$$     +                        (VNAME(I),I=YPOS,K)
-c$$$	END IF
-c$$$	REWIND 10
+c$$$    END IF
+c$$$    REWIND 10
 c$$$      ELSE
-c$$$	WRITE(*, *)'Do you want to name variables ? (Y/N): '
-c$$$	READ(*, '(a)') ANS
-c$$$	IF (ANS .EQ. 'Y' .OR. ANS .EQ. 'y') THEN
-c$$$	  WRITE(*, *)'Variable names may contain up to 8 characters'
-c$$$	  WRITE(*, *)'Name for dependant (Y) variable = ? '
-c$$$	  READ(*, '(a)') YNAME
-c$$$	  DO 40 I = 1, K
-c$$$	    WRITE(*, *)'Name for variable', I, ' = ? '
-c$$$	    READ(*, '(a)') VNAME(I)
+c$$$    WRITE(*, *)'Do you want to name variables ? (Y/N): '
+c$$$    READ(*, '(a)') ANS
+c$$$    IF (ANS .EQ. 'Y' .OR. ANS .EQ. 'y') THEN
+c$$$      WRITE(*, *)'Variable names may contain up to 8 characters'
+c$$$      WRITE(*, *)'Name for dependant (Y) variable = ? '
+c$$$      READ(*, '(a)') YNAME
+c$$$      DO 40 I = 1, K
+c$$$        WRITE(*, *)'Name for variable', I, ' = ? '
+c$$$        READ(*, '(a)') VNAME(I)
 c$$$   40     CONTINUE
-c$$$	ELSE
-c$$$	  DO 50 I = 1, K
-c$$$	    WRITE(VNAME(I), 940) I
+c$$$    ELSE
+c$$$      DO 50 I = 1, K
+c$$$        WRITE(VNAME(I), 940) I
 c$$$  940       FORMAT('XVAR(', I2, ')')
 c$$$   50     CONTINUE
-c$$$	  YNAME = 'Dept.var'
-c$$$	END IF
+c$$$      YNAME = 'Dept.var'
+c$$$    END IF
 c$$$      END IF
 c$$$C
 c$$$      WRITE(*, *)'Which line does the data start on ? '
 c$$$      READ(*, *) LINE1
 c$$$      IF (LINE1 .GT. 1) THEN
-c$$$	DO 60 I = 1, LINE1-1
+c$$$    DO 60 I = 1, LINE1-1
 c$$$   60   READ(10, *)
 c$$$      END IF
 c$$$C
 c$$$C     Read in data and form the upper-triangular factorization.
 c$$$C
 c$$$      IF (ICONST .EQ. 1) THEN
-c$$$	CALL CLEAR(NCOLS, NRBAR, EL, U, RHS, RESSQ, IER)
+c$$$    CALL CLEAR(NCOLS, NRBAR, EL, U, RHS, RESSQ, IER)
 c$$$      ELSE
-c$$$	CALL CLEAR(NCOLS, NRBAR, EL(1), U, RHS(1), RESSQ, IER)
+c$$$    CALL CLEAR(NCOLS, NRBAR, EL(1), U, RHS(1), RESSQ, IER)
 c$$$      END IF
 c$$$      NOBS = 1
 c$$$      X(0) = ONE
@@ -148,17 +148,17 @@ c$$$C     missing values).
 c$$$C
 c$$$   70 CONTINUE
 c$$$      IF (YPOS .GT. K) THEN
-c$$$	READ(10, *, ERR=70, END=80) (X(I),I=1,K), Y
+c$$$    READ(10, *, ERR=70, END=80) (X(I),I=1,K), Y
 c$$$      ELSE IF (YPOS .EQ. 1) THEN
-c$$$	READ(10, *, ERR=70, END=80) Y, (X(I),I=1,K)
+c$$$    READ(10, *, ERR=70, END=80) Y, (X(I),I=1,K)
 c$$$      ELSE
-c$$$	READ(10, *, ERR=70, END=80) (X(I),I=1,YPOS-1), Y,
+c$$$    READ(10, *, ERR=70, END=80) (X(I),I=1,YPOS-1), Y,
 c$$$     +                              (X(I),I=YPOS,K)
 c$$$      END IF
 c$$$      IF (ICONST .EQ. 1) THEN
-c$$$	CALL INCLUD(NCOLS, NRBAR, WT, X, Y, EL, U, RHS, RESSQ, IER)
+c$$$    CALL INCLUD(NCOLS, NRBAR, WT, X, Y, EL, U, RHS, RESSQ, IER)
 c$$$      ELSE
-c$$$	CALL INCLUD(NCOLS, NRBAR, WT, X(1), Y, EL(1), U, RHS(1), RESSQ,
+c$$$    CALL INCLUD(NCOLS, NRBAR, WT, X(1), Y, EL(1), U, RHS(1), RESSQ,
 c$$$     +              IER)
 c$$$      END IF
 c$$$      NOBS = NOBS + 1
@@ -176,11 +176,11 @@ c$$$      OPEN(9, FILE=FNAME, STATUS='NEW', ACCESS='SEQUENTIAL',
 c$$$     +          FORM='UNFORMATTED')
 c$$$      WRITE(9) K, ICONST, NCOLS, NOBS, NRBAR, LSEL
 c$$$      IF (ICONST .EQ. 0) THEN
-c$$$	WRITE(9) YNAME, (VNAME(I),I=1,K)
-c$$$	WRITE(9) (U(I),I=1,NRBAR), (EL(I),I=1,K), (RHS(I),I=1,K), RESSQ
+c$$$    WRITE(9) YNAME, (VNAME(I),I=1,K)
+c$$$    WRITE(9) (U(I),I=1,NRBAR), (EL(I),I=1,K), (RHS(I),I=1,K), RESSQ
 c$$$      ELSE
-c$$$	WRITE(9) YNAME, (VNAME(I),I=0,K)
-c$$$	WRITE(9) (U(I),I=1,NRBAR), (EL(I),I=0,K), (RHS(I),I=0,K), RESSQ
+c$$$    WRITE(9) YNAME, (VNAME(I),I=0,K)
+c$$$    WRITE(9) (U(I),I=1,NRBAR), (EL(I),I=0,K), (RHS(I),I=0,K), RESSQ
 c$$$      END IF
 c$$$      ENDFILE 9
 c$$$C
@@ -211,8 +211,8 @@ C
       IF (IER .NE. 0) RETURN
 C
       DO 10 I = 1, NP
-	D(I) = ZERO
-	THETAB(I) = ZERO
+        D(I) = ZERO
+        THETAB(I) = ZERO
    10 CONTINUE
       DO 20 I = 1, NRBAR
    20 RBAR(I) = ZERO
@@ -259,29 +259,29 @@ c$$$C
 c$$$C     Skip unnecessary transformations.   Test on exact zeroes must be
 c$$$C     used or stability can be destroyed.
 c$$$C
-c$$$	IF (W .EQ. ZERO) RETURN
-c$$$	XI = XROW(I)
-c$$$	IF (XI .EQ. ZERO) THEN
-c$$$	  NEXTR = NEXTR + NP - I
-c$$$	  GO TO 30
-c$$$	END IF
-c$$$	DI = D(I)
-c$$$	WXI = W * XI
-c$$$	DPI = DI + WXI*XI
-c$$$	CBAR = DI / DPI
-c$$$	SBAR = WXI / DPI
-c$$$	W = CBAR * W
-c$$$	D(I) = DPI
-c$$$	IF (I .EQ. NP) GO TO 20
-c$$$	DO 10 K = I+1, NP
-c$$$	  XK = XROW(K)
-c$$$	  XROW(K) = XK - XI * RBAR(NEXTR)
-c$$$	  RBAR(NEXTR) = CBAR * RBAR(NEXTR) + SBAR * XK
-c$$$	  NEXTR = NEXTR + 1
+c$$$    IF (W .EQ. ZERO) RETURN
+c$$$    XI = XROW(I)
+c$$$    IF (XI .EQ. ZERO) THEN
+c$$$      NEXTR = NEXTR + NP - I
+c$$$      GO TO 30
+c$$$    END IF
+c$$$    DI = D(I)
+c$$$    WXI = W * XI
+c$$$    DPI = DI + WXI*XI
+c$$$    CBAR = DI / DPI
+c$$$    SBAR = WXI / DPI
+c$$$    W = CBAR * W
+c$$$    D(I) = DPI
+c$$$    IF (I .EQ. NP) GO TO 20
+c$$$    DO 10 K = I+1, NP
+c$$$      XK = XROW(K)
+c$$$      XROW(K) = XK - XI * RBAR(NEXTR)
+c$$$      RBAR(NEXTR) = CBAR * RBAR(NEXTR) + SBAR * XK
+c$$$      NEXTR = NEXTR + 1
 c$$$   10   CONTINUE
 c$$$   20   XK = Y
-c$$$	Y = XK - XI * THETAB(I)
-c$$$	THETAB(I) = CBAR * THETAB(I) + SBAR * XK
+c$$$    Y = XK - XI * THETAB(I)
+c$$$    THETAB(I) = CBAR * THETAB(I) + SBAR * XK
 c$$$   30 CONTINUE
 c$$$C
 c$$$C     Y * SQRT(W) is now equal to Brown & Durbin's recursive residual.
@@ -323,38 +323,38 @@ C
 C     Accumulate sums of squares & products from row FIRST
 C
       DO 10 J = FIRST, LAST
-	SXX(J) = ZERO
-	SXY(J) = ZERO
+        SXX(J) = ZERO
+        SXY(J) = ZERO
    10 CONTINUE
       INC = NP - LAST
       POS = (FIRST-1) * (NP+NP-FIRST)/2 + 1
       DO 30 ROW = FIRST, LAST
-	DIAG = D(ROW)
-	DY = DIAG * THETAB(ROW)
-	SXX(ROW) = SXX(ROW) + DIAG
-	SXY(ROW) = SXY(ROW) + DY
-	DO 20 COL = ROW+1, LAST
-	  SXX(COL) = SXX(COL) + DIAG * RBAR(POS)**2
-	  SXY(COL) = SXY(COL) + DY * RBAR(POS)
-	  POS = POS + 1
+        DIAG = D(ROW)
+        DY = DIAG * THETAB(ROW)
+        SXX(ROW) = SXX(ROW) + DIAG
+        SXY(ROW) = SXY(ROW) + DY
+        DO 20 COL = ROW+1, LAST
+          SXX(COL) = SXX(COL) + DIAG * RBAR(POS)**2
+          SXY(COL) = SXY(COL) + DY * RBAR(POS)
+          POS = POS + 1
    20   CONTINUE
-	POS = POS + INC
+        POS = POS + INC
    30 CONTINUE
 C
 C     Incremental sum of squares for a variable = SXY * SXY / SXX.
 C     Calculate whenever sqrt(SXX) > TOL for that variable.
 C
       DO 40 J = FIRST, LAST
-	SSQX = SXX(J)
-	IF (SQRT(SSQX) .GT. TOL(J)) THEN
-	  SS(J) = SXY(J)**2 / SXX(J)
-	  IF (SS(J) .GT. SMAX) THEN
-	    SMAX = SS(J)
-	    JMAX = J
-	  END IF
-	ELSE
-	  SS(J) = ZERO
-	END IF
+        SSQX = SXX(J)
+        IF (SQRT(SSQX) .GT. TOL(J)) THEN
+          SS(J) = SXY(J)**2 / SXX(J)
+          IF (SS(J) .GT. SMAX) THEN
+            SMAX = SS(J)
+            JMAX = J
+          END IF
+        ELSE
+          SS(J) = ZERO
+        END IF
    40 CONTINUE
 C
       RETURN
@@ -389,10 +389,10 @@ C
       IF (LAST .GT. NP) IER = IER + 8
       IF (NRBAR .LT. NP*(NP-1)/2) IER = IER + 16
       IF (IWK .LT. 2*LAST) IER = IER + 32
-      IF (NBEST .GT. 0) THEN
-	NEED = NVMAX*(NVMAX+1)/2
-	IF (IR .LT. NVMAX) IER = IER + 64
-	IF (IL .LT. NEED) IER = IER + 128
+      IF (NBEST .GT. -1) THEN
+        NEED = NVMAX*(NVMAX+1)/2
+        IF (IR .LT. NVMAX) IER = IER + 64
+        IF (IL .LT. NEED) IER = IER + 128
       END IF
       IF (IER .NE. 0) RETURN
 C
@@ -401,17 +401,17 @@ C     find which variable to drop next.
 C
       J1 = LAST + 1
       DO 20 POS = LAST, FIRST+1, -1
-	CALL DROP1(NP, NRBAR, D, RBAR, THETAB, FIRST, POS, TOL, WK,
+        CALL DROP1(NP, NRBAR, D, RBAR, THETAB, FIRST, POS, TOL, WK,
      *            WK(J1), SMIN, JMIN, IER)
-	IF (JMIN .GT. 0 .AND. JMIN .LT. POS) THEN
-	  CALL VMOVE(NP, NRBAR, VORDER, D, RBAR, THETAB, RSS, JMIN, POS,
+        IF (JMIN .GT. 0 .AND. JMIN .LT. POS) THEN
+          CALL VMOVE(NP, NRBAR, VORDER, D, RBAR, THETAB, RSS, JMIN, POS,
      *            TOL, IER)
-	  IF (NBEST .GT. 0) THEN
-	    DO 10 I = JMIN, POS-1
+          IF (NBEST .GT. 0) THEN
+            DO 10 I = JMIN, POS-1
    10       CALL REPORT(I, RSS(I), BOUND, NVMAX, RESS, IR, NBEST, LOPT,
      *            IL, VORDER)
-	  END IF
-	END IF
+          END IF
+        END IF
    20 CONTINUE
 C
       RETURN
@@ -453,47 +453,47 @@ C
 C     Start of outer cycle for the variable to be dropped.
 C
       DO 60 J = FIRST, LAST
-	D1 = D(J)
-	IF (SQRT(D1) .LT. TOL(J)) THEN
-	  SS(J) = ZERO
-	  SMIN = ZERO
-	  JMIN = J
-	  GO TO 50
-	END IF
-	RHS = THETAB(J)
-	IF (J .EQ. LAST) GO TO 40
+        D1 = D(J)
+        IF (SQRT(D1) .LT. TOL(J)) THEN
+          SS(J) = ZERO
+          SMIN = ZERO
+          JMIN = J
+          GO TO 50
+        END IF
+        RHS = THETAB(J)
+        IF (J .EQ. LAST) GO TO 40
 C
 C     Copy row J of RBAR into WK.
 C
-	POS = POS1
-	DO 10 I = J+1, LAST
-	  WK(I) = RBAR(POS)
-	  POS = POS + 1
+        POS = POS1
+        DO 10 I = J+1, LAST
+          WK(I) = RBAR(POS)
+          POS = POS + 1
    10   CONTINUE
-	POS = POS + INC
+        POS = POS + INC
 C
 C     Lower the variable past each row.
 C
-	DO 30 ROW = J+1, LAST
-	  X = WK(ROW)
-	  D2 = D(ROW)
-	  IF (ABS(X) * SQRT(D1) .LT. TOL(ROW) .OR. D2 .EQ. ZERO) THEN
-	    POS = POS + NP - ROW
-	    GO TO 30
-	  END IF
-	  D1 = D1 * D2 / (D2 + D1 * X**2)
-	  DO 20 COL = ROW+1, LAST
-	    WK(COL) = WK(COL) - X * RBAR(POS)
-	    POS = POS + 1
+        DO 30 ROW = J+1, LAST
+          X = WK(ROW)
+          D2 = D(ROW)
+          IF (ABS(X) * SQRT(D1) .LT. TOL(ROW) .OR. D2 .EQ. ZERO) THEN
+            POS = POS + NP - ROW
+            GO TO 30
+          END IF
+          D1 = D1 * D2 / (D2 + D1 * X**2)
+          DO 20 COL = ROW+1, LAST
+            WK(COL) = WK(COL) - X * RBAR(POS)
+            POS = POS + 1
    20     CONTINUE
-	  RHS = RHS - X * THETAB(ROW)
-	  POS = POS + INC
+          RHS = RHS - X * THETAB(ROW)
+          POS = POS + INC
    30   CONTINUE
    40   SS(J) = RHS * D1 * RHS
-	IF (SS(J) .LT. SMIN) THEN
-	  JMIN = J
-	  SMIN = SS(J)
-	END IF
+        IF (SS(J) .LT. SMIN) THEN
+          JMIN = J
+          SMIN = SS(J)
+        END IF
 C
 C     Update position of first element in row of RBAR.
 C
@@ -533,22 +533,22 @@ C
    10 WK(J) = SS(J)
 C
       DO 30 I = 1, NBEST
-	TEMP = SSBASE - SM
-	IF (TEMP .GE. BOUND(IVAR)) GO TO 40
-	VORDER(IVAR) = VORDER(JM)
-	IF (JM .EQ. IVAR) VORDER(IVAR) = LTEMP
-	CALL REPORT(IVAR, TEMP, BOUND, NVMAX, RESS, IR, NBEST, LOPT, IL,
+        TEMP = SSBASE - SM
+        IF (TEMP .GE. BOUND(IVAR)) GO TO 40
+        VORDER(IVAR) = VORDER(JM)
+        IF (JM .EQ. IVAR) VORDER(IVAR) = LTEMP
+        CALL REPORT(IVAR, TEMP, BOUND, NVMAX, RESS, IR, NBEST, LOPT, IL,
      *              VORDER)
-	IF (I .GE. NBEST) GO TO 40
-	WK(JM) = ZERO
-	SM = ZERO
-	JM = 0
-	DO 20 J = IVAR, LAST
-	  IF (WK(J) .LE. SM) GO TO 20
-	  JM = J
-	  SM = WK(J)
+        IF (I .GE. NBEST) GO TO 40
+        WK(JM) = ZERO
+        SM = ZERO
+        JM = 0
+        DO 20 J = IVAR, LAST
+          IF (WK(J) .LE. SM) GO TO 20
+          JM = J
+          SM = WK(J)
    20   CONTINUE
-	IF (JM .EQ. 0) GO TO 40
+        IF (JM .EQ. 0) GO TO 40
    30 CONTINUE
 C
 C     Restore VORDER(IVAR)
@@ -587,10 +587,10 @@ C
       IF (LAST .GT. NP) IER = IER + 8
       IF (NRBAR .LT. NP*(NP-1)/2) IER = IER + 16
       IF (IWK .LT. 3*LAST) IER = IER + 32
-      IF (NBEST .GT. 0) THEN
-	NEED = NVMAX*(NVMAX+1)/2
-	IF (IR .LT. NVMAX) IER = IER + 64
-	IF (IL .LT. NEED) IER = IER + 128
+      IF (NBEST .GT. -1) THEN
+        NEED = NVMAX*(NVMAX+1)/2
+        IF (IR .LT. NVMAX) IER = IER + 64
+        IF (IL .LT. NEED) IER = IER + 128
       END IF
       IF (IER .NE. 0) RETURN
 C
@@ -600,14 +600,14 @@ C
       J1 = LAST + 1
       J2 = LAST + J1
       DO 10 POS = FIRST, LAST-1
-	  CALL ADD1(NP, NRBAR, D, RBAR, THETAB, POS, LAST, TOL, WK,
+          CALL ADD1(NP, NRBAR, D, RBAR, THETAB, POS, LAST, TOL, WK,
      *            WK(J1), WK(J2), SMAX, JMAX, IER)
-	  IF (NBEST .GT. 0) CALL EXADD1(POS, RSS, BOUND, NVMAX, RESS,
+          IF (NBEST .GT. 0) CALL EXADD1(POS, RSS, BOUND, NVMAX, RESS,
      *        IR, NBEST, LOPT, IL, VORDER, SMAX, JMAX, WK, WK(J1), LAST)
 C
 C     Move the best variable to position POS.
 C
-	  IF (JMAX .GT. POS) CALL VMOVE(NP, NRBAR, VORDER, D, RBAR,
+          IF (JMAX .GT. POS) CALL VMOVE(NP, NRBAR, VORDER, D, RBAR,
      *           THETAB, RSS, JMAX, POS, TOL, IER)
    10 CONTINUE
 C
@@ -641,21 +641,21 @@ C
 C     Initialize arrays BOUND, RESS & LOPT
 C
       DO 30 BEST = 1, NBEST
-	POS = 1
-	DO 20 NVAR = 1, NVMAX
-	  IF (BEST .EQ. 1) THEN
-	    RESS(NVAR,BEST) = RSS(NVAR)
-	  ELSE
-	    RESS(NVAR,BEST) = LARGE
-	  END IF
-	  IF (BEST .EQ. NBEST) BOUND(NVAR) = RESS(NVAR,NBEST)
-	  DO 10 I = 1, NVAR
-	    IF (BEST .EQ. 1) THEN
-	      LOPT(POS,BEST) = VORDER(I)
-	    ELSE
-	      LOPT(POS,BEST) = 0
-	    END IF
-	    POS = POS + 1
+        POS = 1
+        DO 20 NVAR = 1, NVMAX
+          IF (BEST .EQ. 1) THEN
+            RESS(NVAR,BEST) = RSS(NVAR)
+          ELSE
+            RESS(NVAR,BEST) = LARGE
+          END IF
+          IF (BEST .EQ. NBEST) BOUND(NVAR) = RESS(NVAR,NBEST)
+          DO 10 I = 1, NVAR
+            IF (BEST .EQ. 1) THEN
+              LOPT(POS,BEST) = VORDER(I)
+            ELSE
+              LOPT(POS,BEST) = 0
+            END IF
+            POS = POS + 1
    10     CONTINUE
    20   CONTINUE
    30 CONTINUE
@@ -681,13 +681,13 @@ C
 C     If residual sum of squares (SSQ) for the new subset > the
 C     appropriate bound, return.
 C
-   20 IF (POS .GT. NVMAX) RETURN
+      IF (POS .GT. NVMAX) RETURN
       IF (SSQ .GE. BOUND(POS)) RETURN
 C
 C     Find rank of the new subset
 C
       DO 30 RANK = 1,NBEST
-	IF (SSQ .LE. RESS(POS,RANK)) GO TO 40
+        IF (SSQ .LE. RESS(POS,RANK)) GO TO 40
    30 CONTINUE
    40 L0 = (POS*(POS-1))/2
 C
@@ -700,13 +700,13 @@ C
       IF (SSQ .GT. OVER1*RESS(POS,RANK-1)) GO TO 90
       JJ = RANK-1
    50 DO 70 J = 1, POS
-	LISTJ = VORDER(J)
-	L = L0
-	DO 60 I = 1, POS
-	  L = L + 1
-	  IF (LISTJ .EQ. LOPT(L,JJ)) GO TO 70
+        LISTJ = VORDER(J)
+        L = L0
+        DO 60 I = 1, POS
+          L = L + 1
+          IF (LISTJ .EQ. LOPT(L,JJ)) GO TO 70
    60   CONTINUE
-	GO TO 80
+        GO TO 80
    70 CONTINUE
       RETURN
    80 JJ = JJ - 1
@@ -717,18 +717,18 @@ C
    90 IF (RANK .EQ. NBEST) GO TO 110
       J = NBEST - RANK
       DO 100 I = 1, J
-	JJ = NBEST - I
-	RESS(POS,JJ+1) = RESS(POS,JJ)
-	L = L0
-	DO 100 K = 1, POS
-	  L = L + 1
-	  LOPT(L,JJ+1) = LOPT(L,JJ)
+        JJ = NBEST - I
+        RESS(POS,JJ+1) = RESS(POS,JJ)
+        L = L0
+        DO 100 K = 1, POS
+          L = L + 1
+          LOPT(L,JJ+1) = LOPT(L,JJ)
   100 CONTINUE
   110 RESS(POS,RANK) = SSQ
       L = L0
       DO 120 K = 1, POS
-	L = L + 1
-	LOPT(L,RANK) = VORDER(K)
+        L = L + 1
+        LOPT(L,RANK) = VORDER(K)
   120 CONTINUE
       BOUND(POS) = RESS(POS,NBEST)
       END
@@ -763,9 +763,9 @@ C
       IF (NRBAR .LT. NP*(NP-1)/2) IER = IER + 16
       IF (IWK .LT. 3*LAST) IER = IER + 32
       IF (NBEST .GT. 0) THEN
-	NEED = NVMAX*(NVMAX+1)/2
-	IF (IR .LT. NVMAX) IER = IER + 64
-	IF (IL .LT. NEED) IER = IER + 128
+        NEED = NVMAX*(NVMAX+1)/2
+        IF (IR .LT. NVMAX) IER = IER + 64
+        IF (IL .LT. NEED) IER = IER + 128
       END IF
       IF (IER .NE. 0 .OR. NBEST .LE. 0) RETURN
 C
@@ -776,33 +776,33 @@ C
 C     Outer loop; SIZE = current size of subset being considered.
 C
       DO 30 SIZE = FIRST, NV
-	COUNT = 0
-	START = FIRST
+        COUNT = 0
+        START = FIRST
    10   SSRED = ZERO
-	BEST = 0
-	FROM = 0
+        BEST = 0
+        FROM = 0
 C
 C     Find the best variable from those in positions SIZE+1, ..., LAST
 C     to replace the one in position SIZE.   Then rotate variables in
 C     positions START, ..., SIZE.
 C
-	DO 20 I = START, SIZE
-	  CALL ADD1(NP, NRBAR, D, RBAR, THETAB, SIZE, LAST, TOL, WK,
+        DO 20 I = START, SIZE
+          CALL ADD1(NP, NRBAR, D, RBAR, THETAB, SIZE, LAST, TOL, WK,
      *                    WK(J1), WK(J2), SMAX, JMAX, IER)
-	  IF (JMAX .GT. SIZE) THEN
-	    CALL EXADD1(SIZE, RSS, BOUND, NVMAX, RESS, IR, NBEST,
+          IF (JMAX .GT. SIZE) THEN
+            CALL EXADD1(SIZE, RSS, BOUND, NVMAX, RESS, IR, NBEST,
      *                  LOPT, IL, VORDER, SMAX, JMAX, WK, WK(J1), LAST)
-	    IF (SMAX .GT. SSRED) THEN
-	      SSRED = SMAX
-	      BEST = JMAX
-	      IF (I .LT. SIZE) THEN
-		FROM = SIZE + START - I - 1
-	      ELSE
-		FROM = SIZE
-	      END IF
-	    END IF
-	  END IF
-	  IF (I .LT. SIZE) CALL VMOVE(NP, NRBAR, VORDER, D, RBAR,
+            IF (SMAX .GT. SSRED) THEN
+              SSRED = SMAX
+              BEST = JMAX
+              IF (I .LT. SIZE) THEN
+                FROM = SIZE + START - I - 1
+              ELSE
+                FROM = SIZE
+              END IF
+            END IF
+          END IF
+          IF (I .LT. SIZE) CALL VMOVE(NP, NRBAR, VORDER, D, RBAR,
      *                  THETAB, RSS, SIZE, START, TOL, IER)
    20   CONTINUE
 C
@@ -810,20 +810,20 @@ C     If any replacement reduces the RSS, make the best one.
 C     Move variable from position FROM to SIZE.
 C     Move variable from position BEST to FIRST.
 C
-	IF (BEST .GT. SIZE) THEN
-	  IF (FROM .LT. SIZE) CALL VMOVE(NP, NRBAR, VORDER, D, RBAR,
+        IF (BEST .GT. SIZE) THEN
+          IF (FROM .LT. SIZE) CALL VMOVE(NP, NRBAR, VORDER, D, RBAR,
      *                  THETAB, RSS, FROM, SIZE, TOL, IER)
-	  CALL VMOVE(NP, NRBAR, VORDER, D, RBAR, THETAB, RSS, BEST,
+          CALL VMOVE(NP, NRBAR, VORDER, D, RBAR, THETAB, RSS, BEST,
      *                  FIRST, TOL, IER)
-	  COUNT = 0
-	  START = FIRST + 1
-	ELSE
-	  COUNT = COUNT + 1
-	END IF
+          COUNT = 0
+          START = FIRST + 1
+        ELSE
+          COUNT = COUNT + 1
+        END IF
 C
 C     Repeat until COUNT = SIZE - START + 1
 C
-	IF (COUNT .LE. SIZE - START) GO TO 10
+        IF (COUNT .LE. SIZE - START) GO TO 10
    30 CONTINUE
 C
       RETURN
@@ -858,9 +858,9 @@ C
       IF (NRBAR .LT. NP*(NP-1)/2) IER = IER + 16
       IF (DIMWK .LT. 3*LAST .OR. DIMIWK .LT. NVMAX) IER = IER + 32
       IF (NBEST .GT. 0) THEN
-	NEED = NVMAX*(NVMAX+1)/2
-	IF (IR .LT. NVMAX) IER = IER + 64
-	IF (IL .LT. NEED) IER = IER + 128
+        NEED = NVMAX*(NVMAX+1)/2
+        IF (IR .LT. NVMAX) IER = IER + 64
+        IF (IL .LT. NEED) IER = IER + 128
       END IF
       IF (IER .NE. 0 .OR. NBEST .LE. 0) RETURN
 C
@@ -873,11 +873,11 @@ C     This should be redundant if the user has first called SING and
 C     INITR.
 C
       DO 10 ROW = FIRST, NVMAX
-	IF (D(ROW) .LE. TOL(ROW)) THEN
-	  IER = -999
-	  RETURN
-	END IF
-	CALL REPORT(ROW, RSS(ROW), BOUND, NVMAX, RESS, IR, NBEST, LOPT,
+        IF (D(ROW) .LE. TOL(ROW)) THEN
+          IER = -999
+          RETURN
+        END IF
+        CALL REPORT(ROW, RSS(ROW), BOUND, NVMAX, RESS, IR, NBEST, LOPT,
      *        IL, VORDER)
    10 CONTINUE
 C
@@ -901,9 +901,9 @@ C     Move to next lower numbered loop which has not been exhausted.
 C
       IPT = NVMAX - 1
    40 IF (IPT .GE. IWK(IPT)) THEN
-	IPT = IPT - 1
-	IF (IPT .GE. FIRST) GO TO 40
-	RETURN
+        IPT = IPT - 1
+        IF (IPT .GE. FIRST) GO TO 40
+        RETURN
       END IF
 C
 C     Lower variable from position IPT to position IWK(IPT).
@@ -927,7 +927,7 @@ C     inside the current loop.
 C
       TEMP = RSS(NEWPOS-1)
       DO 70 I = IPT, NVMAX
-	IF (TEMP .GT. BOUND(I)) GO TO 80
+        IF (TEMP .GT. BOUND(I)) GO TO 80
    70 CONTINUE
       IF (IWK(NVMAX) .GT. NVMAX) GO TO 30
       IPT = NVMAX - 1
@@ -969,9 +969,9 @@ C
       IF (NRBAR .LT. NP*(NP-1)/2) IER = IER + 16
       IF (IWK .LT. 3*LAST) IER = IER + 32
       IF (NBEST .GT. 0) THEN
-	       NEED = NVMAX*(NVMAX+1)/2
-	  IF (IR .LT. NVMAX) IER = IER + 64
-	  IF (IL .LT. NEED) IER = IER + 128
+               NEED = NVMAX*(NVMAX+1)/2
+          IF (IR .LT. NVMAX) IER = IER + 64
+          IF (IL .LT. NEED) IER = IER + 128
       END IF
       IF (FIN .LT. FOUT .OR. FIN .LE. ZERO) IER = IER + 256
       IF (NOBS .LE. NP) IER = IER + 512
@@ -982,8 +982,8 @@ C     value of (1 + EPS) is > 1.   It is used to test for a perfect fit
 C     (RSS = 0).
 C
    10 IF (ONE + EPS .LE. ONE) THEN
-	  EPS = EPS + EPS
-	  GO TO 10
+          EPS = EPS + EPS
+          GO TO 10
       END IF
 C
 C     SIZE = number of variables in the current subset
@@ -998,24 +998,23 @@ C
      *   WK(J1), WK(J2), SMAX, JMAX, IER)
       IF (NBEST .GT. 0) CALL EXADD1(SIZE+1, RSS, BOUND, NVMAX, RESS,
      *    IR, NBEST, LOPT, IL, VORDER, SMAX, JMAX, WK, WK(J1), LAST)
-      write(*, *) 'Best variable to add: ', VORDER(JMAX)
+
 C
 C     Calculate 'F-to-enter' value
 C
       IF (SIZE .GT. 0) THEN
-	  BASE = RSS(SIZE)
+          BASE = RSS(SIZE)
       ELSE
-	  BASE = RSS(1) + WK(1)
+          BASE = RSS(1) + WK(1)
       END IF
       VAR = (BASE - SMAX) / (NOBS - SIZE - 1)
       IF (VAR .LT. EPS*BASE) THEN
-	  IER = -1
-	  F = ZERO
+          IER = -1
+          F = ZERO
       ELSE
-	  F = SMAX / VAR
+          F = SMAX / VAR
       END IF
-      write(*, 900) F
-  900 format(' F-to-enter = ', f10.2)
+
 C
 C     Exit if F < FIN or IER < 0 (perfect fit)
 C
@@ -1034,18 +1033,17 @@ C
      *    WK(J1), SMIN, JMIN, IER)
       VAR = RSS(SIZE) / (NOBS - SIZE)
       F = SMIN / VAR
-      write(*, 910) VORDER(JMIN), F
-  910 format(' F-to-drop variable: ', i4, ' = ', f10.2)
+
       IF (F .LT. FOUT) THEN
-	CALL VMOVE(NP, NRBAR, VORDER, D, RBAR, THETAB, RSS, JMIN, SIZE,
+        CALL VMOVE(NP, NRBAR, VORDER, D, RBAR, THETAB, RSS, JMIN, SIZE,
      *        TOL, IER)
-	IF (NBEST .GT. 0) THEN
-	  DO 40 I = JMIN, SIZE-1
+        IF (NBEST .GT. 0) THEN
+          DO 40 I = JMIN, SIZE-1
    40     CALL REPORT(I, RSS(I), BOUND, NVMAX, RESS, IR, NBEST, LOPT,
      *        IL, VORDER)
-	END IF
-	SIZE = SIZE - 1
-	GO TO 30
+        END IF
+        SIZE = SIZE - 1
+        GO TO 30
       END IF
 C
       GO TO 20
@@ -1149,13 +1147,13 @@ C
       LINDEP(COL) = .TRUE.
       IER = IER - 1
       IF (COL .LT. NP) THEN
-	NC2 = NP - COL
-	POS2 = POS + NP - COL + 1
-	CALL INCLUD(NC2, NC2*(NC2-1)/2, D(COL), RBAR(POS+1),
+        NC2 = NP - COL
+        POS2 = POS + NP - COL + 1
+        CALL INCLUD(NC2, NC2*(NC2-1)/2, D(COL), RBAR(POS+1),
      +            THETAB(COL), D(COL+1), RBAR(POS2), THETAB(COL+1),
      +            SSERR, IER)
       ELSE
-	SSERR = SSERR + D(COL) * THETAB(COL)**2
+        SSERR = SSERR + D(COL) * THETAB(COL)**2
       END IF
       D(COL) = ZERO
       WORK(COL) = ZERO
@@ -1353,21 +1351,21 @@ C
 C
       DO 60 COL2 = NP, COL1+1, -1
       IF (WORK(COL2) .GT. ZERO) THEN
-	POS1 = COL1 - 1
-	POS2 = COL2 - 1
-	DIFF = COL2 - COL1
-	SUM = ZERO
-	DO 50 ROW = 1, MIN(COL1-1, NP)
-	  SUM = SUM + D(ROW) * RBAR(POS1) * RBAR(POS2)
-	  POS1 = POS1 + NP - ROW - 1
-	  POS2 = POS1 + DIFF
+        POS1 = COL1 - 1
+        POS2 = COL2 - 1
+        DIFF = COL2 - COL1
+        SUM = ZERO
+        DO 50 ROW = 1, MIN(COL1-1, NP)
+          SUM = SUM + D(ROW) * RBAR(POS1) * RBAR(POS2)
+          POS1 = POS1 + NP - ROW - 1
+          POS2 = POS1 + DIFF
    50   CONTINUE
-	SUM = SUM + D(COL1) * RBAR(POS2)
-	CORMAT(POS) = SUM / (WORK(COL1) * WORK(COL2))
-	ELSE
-	CORMAT(POS) = ZERO
-	END IF
-	POS = POS - 1
+        SUM = SUM + D(COL1) * RBAR(POS2)
+        CORMAT(POS) = SUM / (WORK(COL1) * WORK(COL2))
+        ELSE
+        CORMAT(POS) = ZERO
+        END IF
+        POS = POS - 1
    60   CONTINUE
    70   CONTINUE
 C
@@ -1423,9 +1421,9 @@ C
       IF (M .LE. NP) THEN
       D1 = D(M)
       IF (MP1 .LE. NP) THEN
-	D2 = D(MP1)
-	  ELSE
-	D2 = ZERO
+        D2 = D(MP1)
+          ELSE
+        D2 = ZERO
       END IF
       ELSE
       D1 = ZERO
@@ -1444,11 +1442,11 @@ C
       D(MP1) = D1
       RBAR(M1) = ZERO
       DO 10 COL = M+2, NP
-	M1 = M1 + 1
-	X = RBAR(M1)
-	RBAR(M1) = RBAR(M2)
-	RBAR(M2) = X
-	M2 = M2 + 1
+        M1 = M1 + 1
+        X = RBAR(M1)
+        RBAR(M1) = RBAR(M2)
+        RBAR(M2) = X
+        M2 = M2 + 1
    10     CONTINUE
        X = THETAB(M)
        THETAB(M) = THETAB(MP1)
@@ -1458,8 +1456,8 @@ C
        D(M) = D1 * X**2
        RBAR(M1) = ONE / X
        DO 20 COL = M+2, NP
-	M1 = M1 + 1
-	RBAR(M1) = RBAR(M1) / X
+        M1 = M1 + 1
+        RBAR(M1) = RBAR(M1) / X
    20   CONTINUE
        THETAB(M) = THETAB(M) / X
        GO TO 40
@@ -1475,11 +1473,11 @@ C
       D(MP1) = D2NEW
       RBAR(M1) = SBAR
       DO 30 COL = M+2, NP
-	M1 = M1 + 1
-	Y = RBAR(M1)
-	RBAR(M1) = CBAR*RBAR(M2) + SBAR*Y
-	RBAR(M2) = Y - X*RBAR(M2)
-	M2 = M2 + 1
+        M1 = M1 + 1
+        Y = RBAR(M1)
+        RBAR(M1) = CBAR*RBAR(M2) + SBAR*Y
+        RBAR(M2) = Y - X*RBAR(M2)
+        M2 = M2 + 1
    30  CONTINUE
        Y = THETAB(M)
        THETAB(M) = CBAR*THETAB(MP1) + SBAR*Y
@@ -1621,10 +1619,10 @@ C
       D(I) = DPI
       IF (I .EQ. NP) GO TO 20
       DO 10 K = I+1, NP
-	XK = XROW(K)
-	XROW(K) = XK - XI * RBAR(NEXTR)
-	RBAR(NEXTR) = CBAR * RBAR(NEXTR) + SBAR * XK
-	NEXTR = NEXTR + 1
+        XK = XROW(K)
+        XROW(K) = XK - XI * RBAR(NEXTR)
+        RBAR(NEXTR) = CBAR * RBAR(NEXTR) + SBAR * XK
+        NEXTR = NEXTR + 1
    10   CONTINUE
    20   XK = Y
        Y = XK - XI * THETAB(I)
@@ -1681,22 +1679,22 @@ c$$$C
 c$$$C     Add the .RED extension if necessary.
 c$$$C
 c$$$      IF (INDEX(FNAME, '.RED') .EQ. 0) THEN
-c$$$	IPOS = INDEX(FNAME, ' ')
-c$$$	IF (IPOS .EQ. 0 .OR. IPOS .GT. 11) THEN
-c$$$	  WRITE(LOUT, 9010) FNAME
+c$$$    IPOS = INDEX(FNAME, ' ')
+c$$$    IF (IPOS .EQ. 0 .OR. IPOS .GT. 11) THEN
+c$$$      WRITE(LOUT, 9010) FNAME
 c$$$ 9010     FORMAT(' ** Illegal filename entered - ', A, ' **')
-c$$$	  GO TO 10
-c$$$	END IF
-c$$$	FNAME(IPOS: IPOS+3) = '.RED'
+c$$$      GO TO 10
+c$$$    END IF
+c$$$    FNAME(IPOS: IPOS+3) = '.RED'
 c$$$      END IF
 c$$$C
 c$$$C     Check that file exists.
 c$$$C
 c$$$      INQUIRE(FILE=FNAME, EXIST=OK)
 c$$$      IF (.NOT. OK) THEN
-c$$$	WRITE(LOUT, 9020) FNAME
+c$$$    WRITE(LOUT, 9020) FNAME
 c$$$ 9020   FORMAT(' ** File not found - ', A, ' **')
-c$$$	GO TO 10
+c$$$    GO TO 10
 c$$$      END IF
 c$$$      OPEN(9, FILE=FNAME, STATUS='OLD', ACCESS='SEQUENTIAL',
 c$$$     +        FORM='UNFORMATTED')
@@ -1705,11 +1703,11 @@ c$$$C     Read contents of file.
 c$$$C
 c$$$      READ(9) K, ICONST, NCOLS, NOBS, NRBAR, LSEL
 c$$$      IF (ICONST .EQ. 0) THEN
-c$$$	READ(9) YNAME, (VNAME(I),I=1,K)
-c$$$	READ(9) (U(I),I=1,NRBAR), (EL(I),I=1,K), (RHS(I),I=1,K), RESSQ
+c$$$    READ(9) YNAME, (VNAME(I),I=1,K)
+c$$$    READ(9) (U(I),I=1,NRBAR), (EL(I),I=1,K), (RHS(I),I=1,K), RESSQ
 c$$$      ELSE
-c$$$	READ(9) YNAME, (VNAME(I),I=0,K)
-c$$$	READ(9) (U(I),I=1,NRBAR), (EL(I),I=0,K), (RHS(I),I=0,K), RESSQ
+c$$$    READ(9) YNAME, (VNAME(I),I=0,K)
+c$$$    READ(9) (U(I),I=1,NRBAR), (EL(I),I=0,K), (RHS(I),I=0,K), RESSQ
 c$$$      END IF
 c$$$      I1 = 1 + ICONST
 c$$$      WRITE(LOUT, 9030) K, NOBS, YNAME
@@ -1726,7 +1724,7 @@ c$$$C
 c$$$C     Set up array VORDER.
 c$$$C
 c$$$      DO 30 I = 0, K
-c$$$	VORDER(I) = I
+c$$$    VORDER(I) = I
 c$$$   30 CONTINUE
 c$$$C
 c$$$C     Ask for values of NVMAX & NBEST.
@@ -1751,22 +1749,22 @@ c$$$C
 c$$$C     Call TOLSET, SS & INITR to initialize arrays.
 c$$$C
 c$$$      IF (ICONST .EQ. 1) THEN
-c$$$	CALL TOLSET(NCOLS, NRBAR, EL, U, TOL, WK, IER)
-c$$$	CALL SS(NCOLS, EL, RHS, RESSQ, SSQ, IER)
-c$$$	CALL INITR(NCOLS, NVMX, NBEST, BOUND, RESS, NVMX, LOPT, IL,
+c$$$    CALL TOLSET(NCOLS, NRBAR, EL, U, TOL, WK, IER)
+c$$$    CALL SS(NCOLS, EL, RHS, RESSQ, SSQ, IER)
+c$$$    CALL INITR(NCOLS, NVMX, NBEST, BOUND, RESS, NVMX, LOPT, IL,
 c$$$     +             VORDER, SSQ, IER)
 c$$$      ELSE
-c$$$	CALL TOLSET(NCOLS, NRBAR, EL(1), U, TOL(1), WK, IER)
-c$$$	CALL SS(NCOLS, EL(1), RHS(1), RESSQ, SSQ(1), IER)
-c$$$	CALL INITR(NCOLS, NVMX, NBEST, BOUND, RESS, NVMX, LOPT, IL,
+c$$$    CALL TOLSET(NCOLS, NRBAR, EL(1), U, TOL(1), WK, IER)
+c$$$    CALL SS(NCOLS, EL(1), RHS(1), RESSQ, SSQ(1), IER)
+c$$$    CALL INITR(NCOLS, NVMX, NBEST, BOUND, RESS, NVMX, LOPT, IL,
 c$$$     +             VORDER(1), SSQ(1), IER)
 c$$$      END IF
 c$$$      WRITE(LOUT, 9065) NCOLS, RESSQ
 c$$$ 9065 FORMAT(' Initially NCOLS = ', I4,'  RESSQ = ', G13.5)
 c$$$      IF (NOBS .GT. NCOLS) THEN
-c$$$	NDF = NOBS - NCOLS
-c$$$	VAR = RESSQ / NDF
-c$$$	WRITE(*, 9068) VAR, NDF
+c$$$    NDF = NOBS - NCOLS
+c$$$    VAR = RESSQ / NDF
+c$$$    WRITE(*, 9068) VAR, NDF
 c$$$ 9068   FORMAT(' Resid. variance estimate = ', g11.4, ' with ', i4,
 c$$$     +         ' deg. of freedom'/)
 c$$$      END IF
@@ -1787,7 +1785,7 @@ c$$$C
 c$$$C     Compare ANS with currently available options.
 c$$$C
 c$$$      DO 110 IOPT = 1,22
-c$$$	IF(ANS .EQ. OPTION(IOPT)) GO TO 120
+c$$$    IF(ANS .EQ. OPTION(IOPT)) GO TO 120
 c$$$  110 CONTINUE
 c$$$      WRITE(LOUT, 9080) ANS
 c$$$ 9080 FORMAT(' Option ', A, ' not available')
@@ -1839,9 +1837,9 @@ c$$$      READ(LIN, 8010) NV
 c$$$      ASSIGN 260 TO IRTN
 c$$$      GO TO 1000
 c$$$  260 IF (ICONST .EQ. 1) THEN
-c$$$	CALL REGCF(NCOLS, NRBAR, EL, U, RHS, TOL, WK, NV, IER)
+c$$$    CALL REGCF(NCOLS, NRBAR, EL, U, RHS, TOL, WK, NV, IER)
 c$$$      ELSE
-c$$$	CALL REGCF(NCOLS, NRBAR, EL(1), U, RHS(1), TOL(1), WK, NV, IER)
+c$$$    CALL REGCF(NCOLS, NRBAR, EL(1), U, RHS(1), TOL(1), WK, NV, IER)
 c$$$      END IF
 c$$$      IER = -IER
 c$$$      IF(IER .NE. 0) WRITE(LOUT, 9250) IER
@@ -1858,10 +1856,10 @@ c$$$C
 c$$$C     Option 2. Forward selection.
 c$$$C
 c$$$  300 IF (ICONST .EQ. 1) THEN
-c$$$	CALL FORWRD(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, VORDER, TOL,
+c$$$    CALL FORWRD(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, VORDER, TOL,
 c$$$     +      SSQ, BOUND, NVMX, RESS, NVMX, NBEST, LOPT, IL, WK, IW, IER)
 c$$$      ELSE
-c$$$	CALL FORWRD(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST,
+c$$$    CALL FORWRD(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST,
 c$$$     +      VORDER(1), TOL(1), SSQ(1), BOUND, NVMX, RESS, NVMX, NBEST,
 c$$$     +      LOPT, IL, WK, IW, IER)
 c$$$      END IF
@@ -1874,10 +1872,10 @@ c$$$C
 c$$$C     Option 3. Backward elimination.
 c$$$C
 c$$$  400 IF (ICONST .EQ. 1) THEN
-c$$$	CALL BAKWRD(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, VORDER, TOL,
+c$$$    CALL BAKWRD(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, VORDER, TOL,
 c$$$     +     SSQ, BOUND, NVMX, RESS, NVMX, NBEST, LOPT, IL, WK, IW, IER)
 c$$$      ELSE
-c$$$	CALL BAKWRD(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST,
+c$$$    CALL BAKWRD(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST,
 c$$$     +     VORDER(1), TOL(1), SSQ(1), BOUND, NVMX, RESS, NVMX, NBEST,
 c$$$     +     LOPT, IL, WK, IW, IER)
 c$$$      END IF
@@ -1891,10 +1889,10 @@ c$$$C
 c$$$C     Option 4. Sequential replacement.
 c$$$C
 c$$$  500 IF (ICONST .EQ. 1) THEN
-c$$$	CALL SEQREP(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, VORDER, TOL,
+c$$$    CALL SEQREP(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, VORDER, TOL,
 c$$$     +     SSQ, BOUND, NVMX, RESS, NVMX, NBEST, LOPT, IL, WK, IW, IER)
 c$$$      ELSE
-c$$$	CALL SEQREP(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST,
+c$$$    CALL SEQREP(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST,
 c$$$     +     VORDER(1), TOL(1), SSQ(1), BOUND, NVMX, RESS, NVMX, NBEST,
 c$$$     +     LOPT, IL, WK, IW, IER)
 c$$$      END IF
@@ -1915,23 +1913,23 @@ c$$$      WRITE(LOUT, 9560)
 c$$$ 9560 FORMAT(' Enter F-to-remove value : ')
 c$$$      READ(LIN, 8550) FOUT
 c$$$      IF (ICONST .EQ. 1) THEN
-c$$$	CALL EFROYM(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, FIN, FOUT,
+c$$$    CALL EFROYM(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, FIN, FOUT,
 c$$$     +    SIZE, NOBS, VORDER, TOL, SSQ, BOUND, NVMX, RESS, NVMX, NBEST,
 c$$$     +    LOPT, IL, WK, IW, IER)
 c$$$      ELSE
-c$$$	CALL EFROYM(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST, FIN,
+c$$$    CALL EFROYM(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST, FIN,
 c$$$     +   FOUT, SIZE, NOBS, VORDER(1), TOL(1), SSQ(1), BOUND, NVMX, RESS,
 c$$$     +   NVMX, NBEST, LOPT, IL, WK, IW, IER)
 c$$$      END IF
 c$$$      IF (IER .NE. 0) THEN
-c$$$	WRITE(LOUT, 9570) IER
+c$$$    WRITE(LOUT, 9570) IER
 c$$$ 9570   FORMAT(' Error code',I4,' returned by EFROYM')
-c$$$	GO TO 100
+c$$$    GO TO 100
 c$$$      ELSE
-c$$$	NV = SIZE
-c$$$	I = IPROC/4
-c$$$	IPROC = IPROC + 4
-c$$$	GO TO 1100
+c$$$    NV = SIZE
+c$$$    I = IPROC/4
+c$$$    IPROC = IPROC + 4
+c$$$    GO TO 1100
 c$$$      END IF
 c$$$C
 c$$$C-----------------------------------------------------------------------
@@ -1939,11 +1937,11 @@ c$$$C
 c$$$C     Option 10. Exhaustive search.
 c$$$C
 c$$$  600  IF (ICONST .EQ. 1) THEN
-c$$$	 CALL XHAUST(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, VORDER, TOL,
+c$$$     CALL XHAUST(NCOLS, NRBAR, EL, U, RHS, FIRST, LAST, VORDER, TOL,
 c$$$     +      SSQ, BOUND, NVMX, RESS, NVMX, NBEST, LOPT, IL, WK, IW, IWK,
 c$$$     +      IIW, IER)
 c$$$      ELSE
-c$$$	 CALL XHAUST(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST,
+c$$$     CALL XHAUST(NCOLS, NRBAR, EL(1), U, RHS(1), FIRST, LAST,
 c$$$     +      VORDER(1), TOL(1), +   SSQ(1), BOUND, NVMX, RESS, NVMX,
 c$$$     +      NBEST, LOPT, IL, WK, IW, IWK, IIW, IER)
 c$$$      END IF
@@ -1959,29 +1957,29 @@ c$$$      L = FIRST*(FIRST-1)/2 + 1
 c$$$      LINE = 1
 c$$$      M = FIRST - ICONST
 c$$$      DO 730 NV = FIRST, NVMX
-c$$$	WRITE(LOUT,9700) M
+c$$$    WRITE(LOUT,9700) M
 c$$$ 9700   FORMAT(20X,'Best subsets found of',I3,' variables')
-c$$$	LINE = LINE + 1
-c$$$	DO 720 NB = 1,NBEST
-c$$$	  J = (NB-1)*NVMX + NV
-c$$$	  TEMP = RESS(J)
-c$$$	  IF(TEMP .GT. 1.E+35) GO TO 720
-c$$$	  IPOS = L
-c$$$	  DO 710 I = 1,NV
-c$$$	    J = (NB-1)*IL + IPOS
-c$$$	    IWK(I) = LOPT(J)
-c$$$	    IPOS = IPOS + 1
+c$$$    LINE = LINE + 1
+c$$$    DO 720 NB = 1,NBEST
+c$$$      J = (NB-1)*NVMX + NV
+c$$$      TEMP = RESS(J)
+c$$$      IF(TEMP .GT. 1.E+35) GO TO 720
+c$$$      IPOS = L
+c$$$      DO 710 I = 1,NV
+c$$$        J = (NB-1)*IL + IPOS
+c$$$        IWK(I) = LOPT(J)
+c$$$        IPOS = IPOS + 1
 c$$$  710     CONTINUE
-c$$$	    WRITE(LOUT,9710) TEMP,(IWK(I),I=FIRST,NV)
-c$$$	  LINE = LINE + 1 + (NV-1)/10
+c$$$        WRITE(LOUT,9710) TEMP,(IWK(I),I=FIRST,NV)
+c$$$      LINE = LINE + 1 + (NV-1)/10
 c$$$ 9710     FORMAT(' RSS =',G14.6,3X,'Variables:',10I4,4(/10X,10I4))
 c$$$  720   CONTINUE
-c$$$	IF (LINE .GE. 25 - NB) THEN
-c$$$	  PAUSE
-c$$$	  LINE = 1
-c$$$	END IF
-c$$$	L = L + NV
-c$$$	M = M + 1
+c$$$    IF (LINE .GE. 25 - NB) THEN
+c$$$      PAUSE
+c$$$      LINE = 1
+c$$$    END IF
+c$$$    L = L + NV
+c$$$    M = M + 1
 c$$$  730 CONTINUE
 c$$$      GO TO 100
 c$$$C
@@ -2005,33 +2003,33 @@ c$$$      WRITE(LOUT, 9860)
 c$$$ 9860 FORMAT(' Do you want to save the best subsets found ? (Y/N) ')
 c$$$      READ(LIN, *) ANS
 c$$$      IF (ANS .EQ. 'Y' .OR. ANS .EQ. 'y') THEN
-c$$$	REWIND(9)
-c$$$	CALL LSORT(LOPT, IL, NBEST, NVMX)
-c$$$	READ(9) K, ICONST, NCOLS, NOBS, NRBAR, LSEL
-c$$$	IF (ICONST .EQ. 0) THEN
-c$$$	  READ(9) YNAME, (VNAME(I),I=1,K)
-c$$$	  READ(9) (U(I),I=1,NRBAR), (EL(I),I=1,K), (RHS(I),I=1,K), RESSQ
-c$$$	ELSE
-c$$$	  READ(9) YNAME, (VNAME(I),I=0,K)
-c$$$	  READ(9) (U(I),I=1,NRBAR), (EL(I),I=0,K), (RHS(I),I=0,K), RESSQ
-c$$$	END IF
-c$$$	LSEL = .TRUE.
-c$$$	REWIND(9)
-c$$$	ILNB = IL*NBEST
-c$$$	IR = NVMX*NBEST
-c$$$	WRITE(9) K, ICONST, NCOLS, NOBS, NRBAR, LSEL
-c$$$	IF (ICONST .EQ. 0) THEN
-c$$$	  WRITE(9) YNAME, (VNAME(I),I=1,K)
-c$$$	  WRITE(9) (U(I),I=1,NRBAR), (EL(I),I=1,K), (RHS(I),I=1,K),
+c$$$    REWIND(9)
+c$$$    CALL LSORT(LOPT, IL, NBEST, NVMX)
+c$$$    READ(9) K, ICONST, NCOLS, NOBS, NRBAR, LSEL
+c$$$    IF (ICONST .EQ. 0) THEN
+c$$$      READ(9) YNAME, (VNAME(I),I=1,K)
+c$$$      READ(9) (U(I),I=1,NRBAR), (EL(I),I=1,K), (RHS(I),I=1,K), RESSQ
+c$$$    ELSE
+c$$$      READ(9) YNAME, (VNAME(I),I=0,K)
+c$$$      READ(9) (U(I),I=1,NRBAR), (EL(I),I=0,K), (RHS(I),I=0,K), RESSQ
+c$$$    END IF
+c$$$    LSEL = .TRUE.
+c$$$    REWIND(9)
+c$$$    ILNB = IL*NBEST
+c$$$    IR = NVMX*NBEST
+c$$$    WRITE(9) K, ICONST, NCOLS, NOBS, NRBAR, LSEL
+c$$$    IF (ICONST .EQ. 0) THEN
+c$$$      WRITE(9) YNAME, (VNAME(I),I=1,K)
+c$$$      WRITE(9) (U(I),I=1,NRBAR), (EL(I),I=1,K), (RHS(I),I=1,K),
 c$$$     +              RESSQ
-c$$$	ELSE
-c$$$	  WRITE(9) YNAME, (VNAME(I),I=0,K)
-c$$$	  WRITE(9) (U(I),I=1,NRBAR), (EL(I),I=0,K), (RHS(I),I=0,K),
+c$$$    ELSE
+c$$$      WRITE(9) YNAME, (VNAME(I),I=0,K)
+c$$$      WRITE(9) (U(I),I=1,NRBAR), (EL(I),I=0,K), (RHS(I),I=0,K),
 c$$$     +              RESSQ
-c$$$	END IF
-c$$$	WRITE(9) NVMAX, NBEST, IL, ILNB, IR, IPROC
-c$$$	WRITE(9) (LOPT(L),L=1,ILNB)
-c$$$	WRITE(9) (RESS(I),I=1,IR)
+c$$$    END IF
+c$$$    WRITE(9) NVMAX, NBEST, IL, ILNB, IR, IPROC
+c$$$    WRITE(9) (LOPT(L),L=1,ILNB)
+c$$$    WRITE(9) (RESS(I),I=1,IR)
 c$$$      END IF
 c$$$      STOP
 c$$$C
@@ -2051,10 +2049,10 @@ c$$$C     Find variables in VORDER which are in the input list and move up
 c$$$C     to the next available position.
 c$$$C
 c$$$      IF (ICONST .EQ. 1) THEN
-c$$$	CALL REORDR(NCOLS, NRBAR, VORDER, EL, U, RHS, SSQ, TOL, IWK, NV,
+c$$$    CALL REORDR(NCOLS, NRBAR, VORDER, EL, U, RHS, SSQ, TOL, IWK, NV,
 c$$$     +            2, IER)
 c$$$      ELSE
-c$$$	CALL REORDR(NCOLS, NRBAR, VORDER(1), EL(1), U, RHS(1), SSQ(1),
+c$$$    CALL REORDR(NCOLS, NRBAR, VORDER(1), EL(1), U, RHS(1), SSQ(1),
 c$$$     +              TOL(1), IWK, NV, 1, IER)
 c$$$      END IF
 c$$$      NV = NV + ICONST
@@ -2075,7 +2073,7 @@ c$$$      LAST = NCOLS
 c$$$      J = LAST
 c$$$  920 L = VORDER(J)
 c$$$      DO 930 M = 1, NV
-c$$$	IF(L .EQ. IWK(M)) GO TO 940
+c$$$    IF(L .EQ. IWK(M)) GO TO 940
 c$$$  930 CONTINUE
 c$$$      GO TO 960
 c$$$  940 IF(J .EQ. LAST) GO TO 950
@@ -2094,8 +2092,8 @@ c$$$C
 c$$$ 1100 WRITE(LOUT, 9900)
 c$$$ 9900 FORMAT(' Order  Variable   Resid.sumsq.')
 c$$$      DO 1110 I = 1-ICONST, NV-ICONST
-c$$$	J = VORDER(I)
-c$$$	WRITE(LOUT, 9910) I, VNAME(J), SSQ(I)
+c$$$    J = VORDER(I)
+c$$$    WRITE(LOUT, 9910) I, VNAME(J), SSQ(I)
 c$$$ 9910   FORMAT(I5, 3X, A8, 1X, G14.6)
 c$$$ 1110 CONTINUE
 c$$$      GO TO 100
@@ -2115,16 +2113,16 @@ C
 C
       IF (NVMX .LT. 2) RETURN
       DO 20 COL = 1, NBEST
-	TEMP = LOPT(2, COL)
-	IF (TEMP .GT. LOPT(3,COL)) THEN
-	  LOPT(2,COL) = LOPT(3,COL)
-	  LOPT(3,COL) = TEMP
-	END IF
-	IF (IL .LE. 3) GO TO 20
-	START = 4
-	DO 10 SIZE = 3, NVMX
-	  CALL SHELL(LOPT(START,COL), SIZE)
-	  START = START + SIZE
+        TEMP = LOPT(2, COL)
+        IF (TEMP .GT. LOPT(3,COL)) THEN
+          LOPT(2,COL) = LOPT(3,COL)
+          LOPT(3,COL) = TEMP
+        END IF
+        IF (IL .LE. 3) GO TO 20
+        START = 4
+        DO 10 SIZE = 3, NVMX
+          CALL SHELL(LOPT(START,COL), SIZE)
+          START = START + SIZE
    10   CONTINUE
    20 CONTINUE
       RETURN
@@ -2147,7 +2145,7 @@ C
    10 INCR = INCR/3
       IF (INCR .EQ. 2*(INCR/2)) INCR = INCR + 1
       DO 50 START = 1, INCR
-	END = N
+        END = N
 C
 C      TEMP contains the element being compared; IT holds its current
 C      location.   It is compared with the elements in locations
@@ -2157,36 +2155,36 @@ C      each time through the sequence, the END is decreased by INCR
 C      until END <= INCR.
 C
    20   I1 = START
-	TEMP = L(I1)
-	IT = I1
+        TEMP = L(I1)
+        IT = I1
 C
 C      I2 = location of element NEW to be compared with TEMP.
 C      Test I2 <= END.
 C
    30   I2 = I1 + INCR
-	IF (I2 .GT. END) THEN
-	  IF (I1 .GT. IT) L(I1) = TEMP
-	  END = END - INCR
-	  GO TO 40
-	END IF
-	NEW = L(I2)
+        IF (I2 .GT. END) THEN
+          IF (I1 .GT. IT) L(I1) = TEMP
+          END = END - INCR
+          GO TO 40
+        END IF
+        NEW = L(I2)
 C
 C      If TEMP > NEW, move NEW to lower-numbered position.
 C
-	IF (TEMP .GT. NEW) THEN
-	  L(I1) = NEW
-	  I1 = I2
-	  GO TO 30
-	END IF
+        IF (TEMP .GT. NEW) THEN
+          L(I1) = NEW
+          I1 = I2
+          GO TO 30
+        END IF
 C
 C      TEMP <= NEW so do not swap.
 C      Use NEW as the next TEMP.
 C
-	IF (I1 .GT. IT) L(I1) = TEMP
-	I1 = I2
-	TEMP = NEW
-	IT = I1
-	GO TO 30
+        IF (I1 .GT. IT) L(I1) = TEMP
+        I1 = I2
+        TEMP = NEW
+        IT = I1
+        GO TO 30
 C
 C      Repeat until END <= INCR.
 C
@@ -2245,15 +2243,15 @@ c$$$C
 c$$$      DO 20 ROW = 1, I2
 c$$$      TEXT = ' ' // VNAME(VORDER(ROW+IN)) // EMPTY
 c$$$      IF (I1 .GT. ROW) THEN
-c$$$	UPOS = (ROW-1) * (NROWS+NROWS-ROW) /2 + (I1-ROW)
-c$$$	LAST = UPOS + I2 - I1
-c$$$	WRITE(TEXT(12:74), '(7(F8.5,1X))')(CORMAT(I),I=UPOS,LAST)
+c$$$    UPOS = (ROW-1) * (NROWS+NROWS-ROW) /2 + (I1-ROW)
+c$$$    LAST = UPOS + I2 - I1
+c$$$    WRITE(TEXT(12:74), '(7(F8.5,1X))')(CORMAT(I),I=UPOS,LAST)
 c$$$      ELSE
-c$$$	UPOS = (ROW-1) * (NROWS+NROWS-ROW) /2 + 1
-c$$$	TPOS = 12 + 9*(ROW-I1)
-c$$$	TEXT(TPOS:TPOS+8) = CHAR1
-c$$$	LAST = UPOS + I2 - ROW - 1
-c$$$	IF (ROW .LT. I2) WRITE(TEXT(TPOS+9:74), '(6(F8.5, 1X))')
+c$$$    UPOS = (ROW-1) * (NROWS+NROWS-ROW) /2 + 1
+c$$$    TPOS = 12 + 9*(ROW-I1)
+c$$$    TEXT(TPOS:TPOS+8) = CHAR1
+c$$$    LAST = UPOS + I2 - ROW - 1
+c$$$    IF (ROW .LT. I2) WRITE(TEXT(TPOS+9:74), '(6(F8.5, 1X))')
 c$$$     +                 (CORMAT(I),I=UPOS, LAST)
 c$$$      END IF
 c$$$      WRITE(LOUT, '(A)') TEXT

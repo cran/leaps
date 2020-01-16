@@ -201,7 +201,7 @@ leaps.setup<-function(x,y,wt=rep(1,length(y)),force.in=NULL,
 }
 
 warn.extra<-function(obj){ 
-	i<-which(obj$ress<obj$rss*(1-1e-8),arr.ind=TRUE)[,1]
+	i<-which(obj$ress<obj$rss[seq_along(obj$ress)]*(1-1e-8),arr.ind=TRUE)[,1]
     if(length(i)) 
     	warning(paste0("model with initial (",paste(i-obj$int,collapse=","),") variables was better, and is reported"))
     invisible(i)	
