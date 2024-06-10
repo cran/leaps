@@ -1,3 +1,7 @@
+3.2  Add CONTINUE statements for woke compilers that can't handle traditional FORTRAN
+
+     Renamed this file because CMD check requires a specific format for NEWS
+
 3.1  The check in the version 3.0 fix could have the wrong vector lengths.
 
      with nested=TRUE, the code could fail to allocate enough memory for Fortran.

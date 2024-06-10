@@ -35,7 +35,7 @@ A list with components
 \item{label}{vector of names for the columns of x}
 }
 \references{
-Alan Miller "Subset Selection in Regression" Chapman \& Hall
+Alan Miller "Subset Selection in Regression" Chapman & Hall
 }
 \note{
 With \code{strictly.compatible=T} the function will stop with an error if \code{x} is not of full rank or if it has more than 31 columns. It will ignore the column names of \code{x} even if \code{names==NULL} and will replace them with "0" to "9", "A" to "Z".

@@ -1,4 +1,4 @@
-useDynLib(leaps)
+useDynLib(leaps,.registration = TRUE)
 importFrom("grDevices", "gray")
 importFrom("graphics", "axis", "box", "image", "par", "title")
 importFrom("stats", "coef", "model.extract", "model.matrix", "terms")
